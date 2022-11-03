@@ -1,3 +1,11 @@
+/*
+ * @Descripttion:
+ * @version:
+ * @Author: TianHen
+ * @Date: 2022-10-31 14:32:06
+ * @LastEditors: TianHen
+ * @LastEditTime: 2022-11-02 18:00:56
+ */
 import Layout from '@/layouts/index.vue';
 import DashboardIcon from '@/assets/assets-slide-dashboard.svg';
 
@@ -7,7 +15,7 @@ export default [
     component: Layout,
     redirect: '/dashboard/base',
     name: 'dashboard',
-    meta: { title: '仪表盘', icon: DashboardIcon },
+    meta: { title: '仪表盘', icon: DashboardIcon, orderNo: 0 },
     children: [
       {
         path: 'base',

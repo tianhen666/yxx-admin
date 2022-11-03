@@ -1,51 +1,54 @@
 <template>
-  <div>
-    <t-card class="list-card-container">
-      <!-- 列表头部 -->
-      <t-row justify="space-between">
-        <div class="left-operation-container">
-          <t-button variant="base" theme="default" :disabled="!selectedRowKeys.length"> 导出用户 </t-button>
-          <p v-if="!!selectedRowKeys.length" class="selected-count">已选{{ selectedRowKeys.length }}项</p>
-        </div>
-        <div class="search-input">
-          <t-input v-model="searchValue" placeholder="请输入你需要搜索的内容" clearable>
-            <template #suffix-icon>
-              <search-icon size="20px" />
-            </template>
-          </t-input>
-        </div>
-      </t-row>
-
-      <div class="table_box">
-        <!-- 列表内容 -->
-        <t-table
-          :data="data"
-          :columns="COLUMNS"
-          :row-key="rowKey"
-          :hover="true"
-          table-layout="auto"
-          max-height="30%"
-          :scroll="{ type: 'lazy', bufferSize: 10 }"
-          :pagination="pagination"
-          :selected-row-keys="selectedRowKeys"
-          :loading="dataLoading"
-          :header-affixed-top="{ offsetTop, container: getContainer }"
-          @page-change="rehandlePageChange"
-          @change="rehandleChange"
-          @select-change="rehandleSelectChange"
+  <t-card class="list-card-container">
+    <!-- 列表头部 -->
+    <t-row align="center" class="table-list-header" :gutter="16">
+      <!-- 搜索 -->
+      <t-col class="search-input" :span="2">
+        <t-input v-model="searchValue" placeholder="输入用户名或手机号搜索" clearable @enter="fetchData">
+          <template #suffix-icon>
+            <search-icon size="20px" />
+          </template>
+        </t-input>
+      </t-col>
+      <!-- 店铺下拉选择 -->
+      <t-col class="select-box" :span="2">
+        <t-select
+          show-arrow
+          placeholder="选择店铺"
+          filterable
+          :loading="storeListLoading"
+          :options="storeListData"
+          :on-search="fetchDataStoreList"
+          :on-change="fetchDataStoreChange"
+          clearable
         >
-        </t-table>
-      </div>
-    </t-card>
+        </t-select>
+      </t-col>
+      <!-- 数据导出 -->
+      <t-col class="export-btn" :span="2">
+        <t-button variant="base" theme="primary" :disabled="!storeId"> 导出用户数据 </t-button>
+      </t-col>
+    </t-row>
 
-    <t-dialog
-      v-model:visible="confirmVisible"
-      header="确认删除当前所选合同？"
-      :body="confirmBody"
-      :on-cancel="onCancel"
-      @confirm="onConfirmDelete"
-    />
-  </div>
+    <!-- 列表内容 -->
+    <t-table
+      class="table-box"
+      :data="data"
+      :columns="COLUMNS"
+      row-key="id"
+      :hover="true"
+      max-height="calc(100% - 64px)"
+      :scroll="{ type: 'lazy', bufferSize: 100 }"
+      :pagination="pagination"
+      :loading="dataLoading"
+      :header-affixed-top="true"
+      @page-change="rehandlePageChange"
+    >
+      <template #avatar="{ row }">
+        <t-avatar :image="row.avatar" alt="无" size="large" />
+      </template>
+    </t-table>
+  </t-card>
 </template>
 
 <script lang="ts">
@@ -55,38 +58,86 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { SearchIcon } from 'tdesign-icons-vue-next';
-import { MessagePlugin } from 'tdesign-vue-next';
+import { ref, onMounted } from 'vue';
 import { getUserList } from '@/api/userList';
-import { useSettingStore } from '@/store';
-import { prefix } from '@/config/global';
-
+import { getStoreList } from '@/api/storeList';
 import { COLUMNS } from './constants';
 
-// 主题配置
-const store = useSettingStore();
-
-// 数据列表
-const data = ref([]);
-
+// 分页配置
+const pageSizeOptions = [
+  { label: '每页 10 条', value: 10 },
+  { label: '每页 30 条', value: 30 },
+  { label: '每页 50 条', value: 50 },
+  { label: '每页 100 条', value: 100 },
+  { label: '每页 500 条', value: 500 },
+  { label: '每页 1000 条', value: 1000 },
+];
 // 分页
 const pagination = ref({
-  defaultPageSize: 20,
-  total: 100,
+  defaultPageSize: 30,
+  total: 0,
   defaultCurrent: 1,
+  pageSizeOptions,
 });
-
+// 数据列表
+const data = ref([]);
 // 搜索参数
 const searchValue = ref('');
 // 根据店铺查询
 const storeId = ref(0);
-
 // 加载中
 const dataLoading = ref(false);
 
-// 获取数据列表
+// 店铺列表加载
+const storeListLoading = ref(false);
+// 店铺列表数据
+const storeListData = ref([]);
+// 店铺列表分页
+const paginationStore = ref({
+  defaultPageSize: 2000,
+  total: 0,
+  defaultCurrent: 1,
+});
+
+/**
+ * 获取店铺列表函数
+ * @param searchStoreName 店铺名称
+ */
+const fetchDataStoreList = async (searchStoreName: string) => {
+  storeListLoading.value = true;
+  try {
+    const { records, total } = await getStoreList({
+      searchStoreName,
+      pageNum: paginationStore.value.defaultCurrent,
+      pageSize: paginationStore.value.defaultPageSize,
+    });
+
+    // 数据赋值
+    storeListData.value = records.map((item) => ({ label: item.name, value: item.storeId }));
+
+    // 分页赋值
+    paginationStore.value = {
+      ...paginationStore.value,
+      total,
+    };
+  } catch (e) {
+    console.log(e);
+  } finally {
+    storeListLoading.value = false;
+  }
+};
+/**
+ * 更换店铺筛选
+ * @param value 选择的店铺ID
+ */
+const fetchDataStoreChange = (value: any) => {
+  storeId.value = value || 0;
+  fetchData();
+};
+
+/**
+ * 获取数据函数
+ */
 const fetchData = async () => {
   dataLoading.value = true;
   try {
@@ -98,8 +149,10 @@ const fetchData = async () => {
     });
     // console.log('userlist', userlist);
 
+    // 数据赋值
     data.value = userlist;
 
+    // 分页赋值
     pagination.value = {
       ...pagination.value,
       total: count,
@@ -111,80 +164,27 @@ const fetchData = async () => {
   }
 };
 
-const deleteIdx = ref(-1);
-const confirmBody = computed(() => {
-  if (deleteIdx.value > -1) {
-    const { name } = data.value[deleteIdx.value];
-    return `删除后，${name}的所有合同信息将被清空，且无法恢复`;
-  }
-  return '';
-});
-
 onMounted(() => {
   fetchData();
+  fetchDataStoreList('');
 });
 
-const confirmVisible = ref(false);
+/**
+ * 分页变化函数
+ * @param curr 分页参数
+ * @param pageInfo 分页数据
+ */
+const rehandlePageChange = (curr: { current: number; pageSize: number }, pageInfo: any) => {
+  // console.log(curr, pageInfo);
 
-const selectedRowKeys = ref([1, 2]);
+  // 分页重新赋值
+  const { current, pageSize } = curr;
+  pagination.value.defaultCurrent = current;
+  pagination.value.defaultPageSize = pageSize;
 
-const router = useRouter();
-
-const resetIdx = () => {
-  deleteIdx.value = -1;
-};
-
-const onConfirmDelete = () => {
-  // 真实业务请发起请求
-  data.value.splice(deleteIdx.value, 1);
-  pagination.value.total = data.value.length;
-  const selectedIdx = selectedRowKeys.value.indexOf(deleteIdx.value);
-  if (selectedIdx > -1) {
-    selectedRowKeys.value.splice(selectedIdx, 1);
-  }
-  confirmVisible.value = false;
-  MessagePlugin.success('删除成功');
-  resetIdx();
-};
-
-const onCancel = () => {
-  resetIdx();
-};
-
-const rowKey = 'index';
-
-const rehandleSelectChange = (val: number[]) => {
-  selectedRowKeys.value = val;
-};
-const rehandlePageChange = (curr, pageInfo) => {
-  console.log('分页变化', curr, pageInfo);
-};
-const rehandleChange = (changeParams, triggerAndData) => {
-  console.log('统一Change', changeParams, triggerAndData);
-};
-
-const offsetTop = computed(() => {
-  return store.isUseTabsRouter ? 48 : 0;
-});
-
-const getContainer = () => {
-  return document.querySelector(`.${prefix}-layout`);
+  // 重新获取数据
+  fetchData();
 };
 </script>
 
-<style lang="less" scoped>
-.left-operation-container {
-  padding: 6px 0;
-  margin-bottom: 16px;
-
-  .selected-count {
-    display: inline-block;
-    margin-left: 8px;
-    color: var(--td-text-color-secondary);
-  }
-}
-
-.search-input {
-  width: 360px;
-}
-</style>
+<style lang="less" scoped></style>

@@ -4,7 +4,7 @@
  * @Author: TianHen
  * @Date: 2022-10-31 14:32:06
  * @LastEditors: TianHen
- * @LastEditTime: 2022-11-01 15:48:37
+ * @LastEditTime: 2022-11-02 18:00:05
  */
 import Layout from '@/layouts/index.vue';
 import LogoutIcon from '@/assets/assets-slide-logout.svg';
@@ -15,7 +15,7 @@ export default [
     name: 'user',
     component: Layout,
     redirect: '/user/index',
-    meta: { title: '个人页', icon: 'user-circle', orderNo: 1 },
+    meta: { title: '个人页', icon: 'user-circle', orderNo: 100 },
     children: [
       {
         path: 'index',
@@ -29,7 +29,7 @@ export default [
     path: '/loginRedirect',
     name: 'loginRedirect',
     redirect: '/login',
-    meta: { title: '登录页', icon: LogoutIcon, orderNo: 1 },
+    meta: { title: '登录页', icon: LogoutIcon, orderNo: 100 },
     component: () => import('@/layouts/blank.vue'),
     children: [
       {

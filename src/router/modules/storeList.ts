@@ -4,24 +4,24 @@
  * @Author: TianHen
  * @Date: 2022-11-01 15:24:30
  * @LastEditors: TianHen
- * @LastEditTime: 2022-11-02 18:00:39
+ * @LastEditTime: 2022-11-02 18:06:29
  */
 import Layout from '@/layouts/index.vue';
 import ListIcon from '@/assets/assets-slide-list.svg';
 
 export default [
   {
-    path: '/userList',
-    name: 'userList',
+    path: '/storeList',
+    name: 'storeList',
     component: Layout,
-    redirect: '/userList/base',
-    meta: { title: '用户管理', icon: ListIcon, orderNo: 1 },
+    redirect: '/storeList/base',
+    meta: { title: '店铺管理', icon: ListIcon, orderNo: 2 },
     children: [
       {
         path: 'base',
-        name: 'UserListBase',
-        component: () => import('@/pages/userList/base/index.vue'),
-        meta: { title: '用户列表' },
+        name: 'StoreListBase',
+        component: () => import('@/pages/storeList/base/index.vue'),
+        meta: { title: '店铺列表' },
       },
     ],
   },
