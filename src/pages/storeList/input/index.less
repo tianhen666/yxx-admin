@@ -1,0 +1,37 @@
+.detail-base {
+  :deep(.t-card__title) {
+    font-size: 18px;
+    font-weight: 500;
+  }
+}
+
+.info-block {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  .info-item {
+    float: none;
+    padding: 12px 0;
+    display: flex;
+    align-items: center;
+    width: 48%;
+    color: var(--td-text-color-primary);
+
+    h1 {
+      flex: none;
+      width: 100px;
+      font-weight: normal;
+      font-size: @font-size-base;
+      color: var(--td-text-color-secondary);
+      text-align: left;
+      line-height: 22px;
+    }
+
+    span {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+}

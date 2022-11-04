@@ -4,7 +4,7 @@
  * @Author: TianHen
  * @Date: 2022-11-01 16:12:22
  * @LastEditors: TianHen
- * @LastEditTime: 2022-11-02 16:41:41
+ * @LastEditTime: 2022-11-04 13:50:23
  */
 export interface ListResult {
   records: Array<ListModel>;
@@ -16,8 +16,19 @@ export interface ListModel {
   name: string;
 }
 
+export interface ListModel2 {
+  userList: Array<unknown>;
+  storeProductList: Array<unknown>;
+  enrollFormList: Array<unknown>;
+  storeWxAccount: object;
+}
+
 export interface requestModel {
   searchStoreName: string;
   pageNum: number;
   pageSize: number;
+}
+
+export interface requestModel2 {
+  storeId: string;
 }

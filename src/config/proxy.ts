@@ -4,7 +4,7 @@
  * @Author: TianHen
  * @Date: 2022-10-31 14:32:05
  * @LastEditors: TianHen
- * @LastEditTime: 2022-11-01 13:33:25
+ * @LastEditTime: 2022-11-04 20:58:17
  */
 export default {
   isRequestProxy: true,
@@ -16,13 +16,13 @@ export default {
   },
   test: {
     // 测试环境接口地址
-    host: 'https://service-exndqyuk-1257786608.gz.apigw.tencentcs.com',
+    host: 'http://localhost:3002',
     // 测试环境 cdn 路径
     cdn: '',
   },
   release: {
     // 正式环境接口地址
-    host: 'https://service-bv448zsw-1257786608.gz.apigw.tencentcs.com',
+    host: 'https://yxxadminapi.fenxiangzl.com',
     // 正式环境 cdn 路径
     cdn: '',
   },

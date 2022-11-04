@@ -34,6 +34,14 @@
       <template #icon="{ row }">
         <t-avatar :image="row.icon" alt="无" size="large" />
       </template>
+
+      <template #op="{ row }">
+        <t-link
+          theme="primary"
+          @click.prevent="router.push({ name: 'StoreListInput', params: { storeId: row.storeId } })"
+          >详情</t-link
+        >
+      </template>
     </t-table>
   </t-card>
 </template>
@@ -46,8 +54,11 @@ export default {
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { getStoreList } from '@/api/storeList';
 import { COLUMNS } from './constants';
+
+const router = useRouter();
 
 // 分页配置
 const pageSizeOptions = [

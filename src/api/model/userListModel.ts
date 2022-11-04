@@ -4,7 +4,7 @@
  * @Author: TianHen
  * @Date: 2022-11-01 16:12:22
  * @LastEditors: TianHen
- * @LastEditTime: 2022-11-02 14:15:29
+ * @LastEditTime: 2022-11-04 10:25:25
  */
 export interface ListResult {
   userlist: Array<ListModel>;
@@ -27,5 +27,5 @@ export interface requestModel {
   searchValue: string;
   pageNum: number;
   pageSize: number;
-  storeId: number;
+  storeId: number | string;
 }

@@ -13,14 +13,13 @@
       <!-- 店铺下拉选择 -->
       <t-col class="select-box" :span="2">
         <t-select
-          show-arrow
+          clearable
           placeholder="选择店铺"
           filterable
           :loading="storeListLoading"
           :options="storeListData"
           :on-search="fetchDataStoreList"
           :on-change="fetchDataStoreChange"
-          clearable
         >
         </t-select>
       </t-col>

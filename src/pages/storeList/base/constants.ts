@@ -4,7 +4,7 @@
  * @Author: TianHen
  * @Date: 2022-11-01 15:50:02
  * @LastEditors: TianHen
- * @LastEditTime: 2022-11-02 23:13:15
+ * @LastEditTime: 2022-11-03 15:38:27
  */
 
 import dayjs from 'dayjs';
@@ -62,5 +62,12 @@ export const COLUMNS = [
     colKey: 'address',
     align: 'center',
     cell: (h: any, { row }: any) => `${row.address}${row.addressDetail}`,
+  },
+  {
+    align: 'left',
+    fixed: 'right',
+    width: 160,
+    colKey: 'op',
+    title: '操作',
   },
 ];
