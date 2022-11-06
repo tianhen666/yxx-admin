@@ -4,7 +4,7 @@
  * @Author: TianHen
  * @Date: 2022-10-31 14:32:06
  * @LastEditors: TianHen
- * @LastEditTime: 2022-11-01 15:11:26
+ * @LastEditTime: 2022-11-06 19:45:51
  */
 import { defineStore } from 'pinia';
 import { TOKEN_NAME } from '@/config/global';
@@ -13,6 +13,7 @@ import type { loginInfo } from '@/api/model/loginModel';
 import { mLogin } from '@/api/login';
 
 const InitUserInfo = {
+  name: '',
   roles: [],
 };
 
@@ -27,29 +28,24 @@ export const useUserStore = defineStore('user', {
     },
   },
   actions: {
+    // 请求登录
     async login(userInfo: loginInfo) {
-      // 请求登录
       const res = await mLogin(userInfo);
-      // console.log('res', res);
-
+      // 设置token缓存
+      localStorage.setItem(TOKEN_NAME, res);
       // 设置token
       this.token = res;
     },
+    // 获取用户信息
     async getUserInfo() {
-      const mockRemoteUserInfo = async (token: string) => {
-        if (token === 'main_token') {
-          return {
-            name: 'td_main',
-            roles: ['all'],
-          };
-        }
+      const mockRemoteUserInfo = async () => {
         return {
-          name: 'td_dev',
-          roles: ['UserIndex', 'DashboardBase', 'login'],
+          name: 'admin',
+          roles: ['all'],
         };
       };
 
-      const res = await mockRemoteUserInfo(this.token);
+      const res = await mockRemoteUserInfo();
 
       this.userInfo = res;
     },

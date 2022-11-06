@@ -4,10 +4,10 @@
  * @Author: TianHen
  * @Date: 2022-10-31 14:32:06
  * @LastEditors: TianHen
- * @LastEditTime: 2022-10-31 16:24:01
+ * @LastEditTime: 2022-11-05 16:37:33
  */
 import { defineStore } from 'pinia';
-import { RouteRecordRaw } from 'vue-router';
+import type { RouteRecordRaw } from 'vue-router';
 import router, { asyncRouterList } from '@/router';
 import { store } from '@/store';
 
@@ -33,7 +33,6 @@ function filterPermissionsRouters(routes: Array<RouteRecordRaw>, roles: Array<un
   return { accessedRouters: res, removeRoutes };
 }
 
-// 设置权限路由全局属性
 export const usePermissionStore = defineStore('permission', {
   state: () => ({
     whiteListRouters: ['/login'],
@@ -41,6 +40,7 @@ export const usePermissionStore = defineStore('permission', {
     removeRoutes: [],
   }),
   actions: {
+    // 根据用户角色，判断显示哪些路由
     async initRoutes(roles: Array<unknown>) {
       let accessedRouters = [];
 
@@ -63,6 +63,7 @@ export const usePermissionStore = defineStore('permission', {
         }
       });
     },
+    // 恢复移除的路由
     async restore() {
       this.removeRoutes.forEach((item: RouteRecordRaw) => {
         router.addRoute(item);

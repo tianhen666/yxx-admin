@@ -4,7 +4,7 @@
  * @Author: TianHen
  * @Date: 2022-10-31 14:32:06
  * @LastEditors: TianHen
- * @LastEditTime: 2022-11-04 17:11:06
+ * @LastEditTime: 2022-11-05 14:19:30
  */
 import Layout from '@/layouts/index.vue';
 import LogoutIcon from '@/assets/assets-slide-logout.svg';
@@ -25,19 +25,19 @@ export default [
       },
     ],
   },
-  {
-    path: '/loginRedirect',
-    name: 'loginRedirect',
-    redirect: '/login',
-    meta: { title: '登录页', icon: LogoutIcon, orderNo: 100, hidden: true },
-    component: () => import('@/layouts/blank.vue'),
-    children: [
-      {
-        path: 'index',
-        redirect: '/login',
-        component: () => import('@/layouts/blank.vue'),
-        meta: { title: '登录中心' },
-      },
-    ],
-  },
+  // {
+  //   path: '/loginRedirect',
+  //   name: 'loginRedirect',
+  //   redirect: '/login',
+  //   meta: { title: '登录页', icon: LogoutIcon, orderNo: 100, hidden: true },
+  //   component: () => import('@/layouts/blank.vue'),
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       redirect: '/login',
+  //       component: () => import('@/layouts/blank.vue'),
+  //       meta: { title: '登录中心' },
+  //     },
+  //   ],
+  // },
 ];
