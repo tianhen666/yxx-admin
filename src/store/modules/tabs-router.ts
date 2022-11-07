@@ -1,3 +1,11 @@
+/*
+ * @Descripttion:
+ * @version:
+ * @Author: TianHen
+ * @Date: 2022-10-31 14:32:06
+ * @LastEditors: TianHen
+ * @LastEditTime: 2022-11-07 13:48:17
+ */
 import { defineStore } from 'pinia';
 import { TRouterInfo, TTabRouterType } from '@/types/interface';
 import { store } from '@/store';
@@ -36,9 +44,12 @@ export const useTabsRouterStore = defineStore('tabsRouter', {
     // 处理新增
     appendTabRouterList(newRoute: TRouterInfo) {
       const needAlive = !ignoreCacheRoutes.includes(newRoute.name as string);
-      if (!this.tabRouters.find((route: TRouterInfo) => route.path === newRoute.path)) {
+      const tabObj = this.tabRouters.find((route: TRouterInfo) => route.path === newRoute.path);
+      if (!tabObj) {
         // eslint-disable-next-line no-param-reassign
         this.tabRouterList = this.tabRouterList.concat({ ...newRoute, isAlive: needAlive });
+      } else if (JSON.stringify(tabObj.query) !== JSON.stringify(newRoute.query)) {
+        tabObj.query = newRoute.query;
       }
     },
     // 处理关闭当前

@@ -4,7 +4,15 @@
     <t-row align="center" class="table-list-header" :gutter="16">
       <!-- 搜索 -->
       <t-col class="search-input" :span="2">
-        <t-input v-model="searchStoreName" placeholder="输入店铺名搜索" clearable @enter="fetchDataStoreList">
+        <t-input
+          v-model="searchStoreName"
+          placeholder="输入店铺名搜索"
+          clearable
+          @enter="
+            paginationStore.defaultCurrent = 1;
+            fetchDataStoreList();
+          "
+        >
           <template #suffix-icon>
             <search-icon size="20px" />
           </template>
@@ -38,7 +46,7 @@
       <template #op="{ row }">
         <t-link
           theme="primary"
-          @click.prevent="router.push({ name: 'StoreListInput', params: { storeId: row.storeId } })"
+          @click.prevent="router.push({ name: 'StoreListInput', query: { storeId: row.storeId } })"
           >详情</t-link
         >
       </template>
@@ -55,6 +63,7 @@ export default {
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { SearchIcon } from 'tdesign-icons-vue-next';
 import { getStoreList } from '@/api/storeList';
 import { COLUMNS } from './constants';
 

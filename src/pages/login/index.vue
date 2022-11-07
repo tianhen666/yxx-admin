@@ -4,7 +4,7 @@
  * @Author: TianHen
  * @Date: 2022-10-31 14:32:06
  * @LastEditors: TianHen
- * @LastEditTime: 2022-10-31 18:26:55
+ * @LastEditTime: 2022-11-07 10:26:05
 -->
 <template>
   <div class="login-wrapper">
@@ -28,7 +28,9 @@
       <tdesign-setting />
     </div>
 
-    <footer class="copyright">Copyright @ 2022-2023 杭州乐齿网络科技有限公司. All Rights Reserved</footer>
+    <footer class="copyright">
+      Copyright @ 2022-{{ new Date().getFullYear() }} 杭州乐齿网络科技有限公司. All Rights Reserved
+    </footer>
   </div>
 </template>
 <script lang="ts">

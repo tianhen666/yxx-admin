@@ -19,18 +19,18 @@
           <search v-if="layout !== 'side'" :layout="layout" />
 
           <!-- 全局通知 -->
-          <notice />
+          <!-- <notice /> -->
 
-          <t-tooltip placement="bottom" content="代码仓库">
+          <!-- <t-tooltip placement="bottom" content="代码仓库">
             <t-button theme="default" shape="square" variant="text" @click="navToGitHub">
               <t-icon name="logo-github" />
             </t-button>
-          </t-tooltip>
-          <t-tooltip placement="bottom" content="帮助文档">
+          </t-tooltip> -->
+          <!-- <t-tooltip placement="bottom" content="帮助文档">
             <t-button theme="default" shape="square" variant="text" @click="navToHelper">
               <t-icon name="help-circle" />
             </t-button>
-          </t-tooltip>
+          </t-tooltip> -->
           <t-dropdown :min-column-width="135" trigger="click">
             <template #dropdown>
               <t-dropdown-menu>
@@ -47,7 +47,7 @@
                 <t-icon class="header-user-avatar" name="user-circle" />
               </template>
               <div class="header-user-account">
-                Tencent
+                {{ userStore.userInfo.name }}
                 <t-icon name="chevron-down" />
               </div>
             </t-button>
@@ -66,7 +66,7 @@
 <script setup lang="ts">
 import { PropType, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useSettingStore } from '@/store';
+import { useSettingStore, useUserStore } from '@/store';
 import { getActive } from '@/router';
 import { prefix } from '@/config/global';
 import LogoFull from '@/assets/assets-logo-full.svg?component';
@@ -109,6 +109,7 @@ const props = defineProps({
 
 const router = useRouter();
 const settingStore = useSettingStore();
+const userStore = useUserStore();
 
 const toggleSettingPanel = () => {
   settingStore.updateConfig({

@@ -66,8 +66,8 @@
         <div class="info-item">
           <h1>门诊地址:</h1>
           <span>
-            <t-tooltip :content="dataObj.address + dataObj.addressDetail">
-              {{ dataObj.address + dataObj.addressDetail }}
+            <t-tooltip :content="`${dataObj.address}${dataObj.addressDetail}`">
+              {{ `${dataObj.address}${dataObj.addressDetail}` }}
             </t-tooltip>
           </span>
         </div>
@@ -89,10 +89,9 @@
 
     <div style="height: 26px"></div>
     <t-row :gutter="16">
-      <t-col :span="6">
+      <t-col :sm="6" :xs="12">
         <t-card title="小程序和支付配置" style="max-height: 510px; overflow-y: auto">
           <t-form
-            ref="formValidatorStatus"
             :label-width="120"
             label-align="left"
             colon
@@ -122,7 +121,7 @@
           </t-form>
         </t-card>
       </t-col>
-      <t-col :span="6">
+      <t-col :sm="6" :xs="12">
         <t-card title="员工列表" class="myCard" style="max-height: 510px; overflow-y: auto">
           <template #actions>
             <t-row :gutter="16">
@@ -185,7 +184,7 @@
                     v-if="powerEdit == index"
                     variant="text"
                     shape="square"
-                    @click="powerEditFun(item.id, item.userPower.power)"
+                    @click="powerSaveFun(item.id, item.userPower.power)"
                   >
                     <check-circle-icon style="color: var(--td-success-color)" />
                   </t-button>
@@ -199,7 +198,7 @@
 
     <div style="height: 26px"></div>
     <t-row :gutter="16">
-      <t-col :span="6">
+      <t-col :sm="6" :xs="12">
         <t-card title="活动列表" style="max-height: 510px; overflow-y: auto">
           <t-list :split="true" size="small">
             <template v-for="(item, index) in dataObj.enrollFormList" :key="index">
@@ -216,7 +215,7 @@
           </t-list>
         </t-card>
       </t-col>
-      <t-col :span="6" style="max-height: 510px; overflow-y: auto">
+      <t-col :sm="6" :xs="12" style="max-height: 510px; overflow-y: auto">
         <t-card title="商品列表">
           <t-list :split="true" size="small">
             <template v-for="(item, index) in dataObj.storeProductList" :key="index">
@@ -237,12 +236,17 @@
   </div>
 </template>
 
+<script lang="ts">
+export default {
+  name: 'StoreListInput',
+};
+</script>
 <script setup lang="ts">
+import { MessagePlugin, NotifyPlugin } from 'tdesign-vue-next';
 import { DeleteIcon, Edit1Icon, CheckCircleIcon } from 'tdesign-icons-vue-next';
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onActivated } from 'vue';
+import { useRoute } from 'vue-router';
 import dayjs from 'dayjs';
-import { NotifyPlugin } from 'tdesign-vue-next';
 import {
   getStoreInfo,
   storeSetAsIsBrand,
@@ -254,12 +258,12 @@ import {
 import { getUserList } from '@/api/userList';
 import { INITIAL_DATA, RULES } from './constants';
 
-const router = useRouter();
+const route = useRoute();
 
-onMounted(() => {
+// keep-alive 每次进入缓存组件加载
+onActivated(() => {
   fetchData();
 });
-
 /**
  * 获取店铺详情
  */
@@ -269,7 +273,7 @@ const fetchData = async () => {
   loading.value = true;
   try {
     const res = await getStoreInfo({
-      storeId: router.currentRoute.value.params.storeId as string,
+      storeId: route.query.storeId as string,
     });
 
     // 数据赋值
@@ -277,6 +281,7 @@ const fetchData = async () => {
     formData.value = res.storeWxAccount as any;
   } catch (e) {
     console.log(e);
+    MessagePlugin.error(e.message);
   } finally {
     loading.value = false;
   }
@@ -289,7 +294,7 @@ const expirationTime = ref(false);
 const setExpirationTime = async () => {
   try {
     await storeChangeStore({
-      storeId: router.currentRoute.value.params.storeId as string,
+      storeId: route.query.storeId as string,
       expire_dt: dataObj.value.expireDt,
     });
     expirationTime.value = false;
@@ -306,7 +311,7 @@ const setExpirationTime = async () => {
 const switchIsbrand = async (value: any) => {
   try {
     await storeSetAsIsBrand({
-      storeId: router.currentRoute.value.params.storeId,
+      storeId: route.query.storeId,
       isbrand: value,
     });
     dataObj.value.isbrand = value;
@@ -324,21 +329,17 @@ const switchIsbrand = async (value: any) => {
  */
 const powerName = [
   { label: '无权限', value: 0 },
-  { label: '管理员', value: 1 },
-  { label: '商品管理', value: 2 },
-  { label: '活动管理', value: 3 },
+  { label: '创建者', value: 1 },
+  { label: '管理员', value: 2 },
+  { label: '商品管理', value: 3 },
+  { label: '活动管理', value: 4 },
 ];
 const powerEdit = ref(-1);
-// 修改员工权限
-const powerEditFun = (pUserId: any, pPowerId: any) => {
-  powerEdit.value = -1;
-  powerSaveFun(pUserId, pPowerId);
-};
-
 const powerAdd = ref('');
 // 切换添加员工状态
 const powerAddtFun = () => {
   powerAdd.value = 'add';
+  // 获取用户列表
   fetchDataUserList('');
 };
 // 获取用户列表
@@ -354,7 +355,7 @@ const fetchDataUserList = async (searchValue: string) => {
       searchValue,
       pageNum: 1,
       pageSize: 100,
-      storeId: router.currentRoute.value.params.storeId as string,
+      storeId: route.query.storeId as string,
     });
 
     // 数据赋值
@@ -371,10 +372,15 @@ const userId = ref(0);
 const powerId = ref(0);
 
 const powerSaveFun = async (pUserId: any, pPowerId: any) => {
+  if (!pUserId) {
+    MessagePlugin.error('请选择用户');
+    return;
+  }
+
   try {
     await storeSetAsPower({
       power: pPowerId,
-      storeId: router.currentRoute.value.params.storeId,
+      storeId: route.query.storeId,
       userId: pUserId,
     });
     // 重新加载门诊数据
@@ -383,6 +389,9 @@ const powerSaveFun = async (pUserId: any, pPowerId: any) => {
   } catch (e) {
     console.log(e);
     NotifyPlugin.error({ title: '失败', content: '权限添加/修改失败' });
+  } finally {
+    powerAdd.value = '';
+    powerEdit.value = -1;
   }
 };
 // 删除员工

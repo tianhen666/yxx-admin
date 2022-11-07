@@ -4,7 +4,7 @@
  * @Author: TianHen
  * @Date: 2022-10-31 14:32:05
  * @LastEditors: TianHen
- * @LastEditTime: 2022-11-02 15:02:13
+ * @LastEditTime: 2022-11-07 10:55:53
 -->
 <template>
   <router-view :class="[mode]" />
@@ -35,5 +35,8 @@ const mode = computed(() => {
 // 进度条样式覆盖
 :deep(#nprogress .bar) {
   background: var(--td-brand-color) !important;
+}
+:golbal(*, *:before, *:after) {
+  box-sizing: border-box;
 }
 </style>

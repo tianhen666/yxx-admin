@@ -4,7 +4,7 @@
  * @Author: TianHen
  * @Date: 2022-11-01 15:24:30
  * @LastEditors: TianHen
- * @LastEditTime: 2022-11-03 12:10:41
+ * @LastEditTime: 2022-11-07 11:54:25
  */
 import Layout from '@/layouts/index.vue';
 import ListIcon from '@/assets/assets-slide-list.svg';
@@ -24,7 +24,7 @@ export default [
         meta: { title: '店铺列表' },
       },
       {
-        path: 'input/:storeId(\\d+)',
+        path: 'input',
         name: 'StoreListInput',
         component: () => import('@/pages/storeList/input/index.vue'),
         meta: { title: '店铺设置', hidden: true },

@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: TianHen
+ * @Date: 2022-10-31 14:32:05
+ * @LastEditors: TianHen
+ * @LastEditTime: 2022-11-07 13:18:51
+-->
 <template>
   <div>
     <template v-if="setting.layout.value === 'side'">

@@ -4,7 +4,15 @@
     <t-row align="center" class="table-list-header" :gutter="16">
       <!-- 搜索 -->
       <t-col class="search-input" :span="2">
-        <t-input v-model="searchValue" placeholder="输入用户名或手机号搜索" clearable @enter="fetchData">
+        <t-input
+          v-model="title"
+          placeholder="请输入活动名称"
+          clearable
+          @enter="
+            pagination.defaultCurrent = 1;
+            fetchData();
+          "
+        >
           <template #suffix-icon>
             <search-icon size="20px" />
           </template>
@@ -25,7 +33,7 @@
       </t-col>
       <!-- 数据导出 -->
       <t-col class="export-btn" :span="2">
-        <t-button variant="base" theme="primary" :disabled="!storeId"> 导出用户数据 </t-button>
+        <t-button variant="base" theme="primary" :disabled="!storeId"> 导出活动数据 </t-button>
       </t-col>
     </t-row>
 
@@ -43,8 +51,11 @@
       :header-affixed-top="true"
       @page-change="rehandlePageChange"
     >
-      <template #avatar="{ row }">
-        <t-avatar :image="row.avatar" alt="无" size="large" />
+      <template #mainPic="{ row }">
+        <t-avatar shape="round" :image="row.mainPic" alt="无" size="large" />
+      </template>
+      <template #op="{ row }">
+        <t-link theme="primary" @click.prevent="">详情</t-link>
       </template>
     </t-table>
   </t-card>
@@ -52,15 +63,16 @@
 
 <script lang="ts">
 export default {
-  name: 'UserListBase',
+  name: 'FormListBase',
 };
 </script>
 
 <script setup lang="ts">
 import { SearchIcon } from 'tdesign-icons-vue-next';
 import { ref, onMounted } from 'vue';
-import { getUserList } from '@/api/userList';
+import { MessagePlugin } from 'tdesign-vue-next';
 import { getStoreList } from '@/api/storeList';
+import { BaseList } from '@/api/formList';
 import { COLUMNS } from './constants';
 
 // 分页配置
@@ -82,7 +94,7 @@ const pagination = ref({
 // 数据列表
 const data = ref([]);
 // 搜索参数
-const searchValue = ref('');
+const title = ref('');
 // 根据店铺查询
 const storeId = ref(0);
 // 加载中
@@ -121,6 +133,7 @@ const fetchDataStoreList = async (searchStoreName: string) => {
       total,
     };
   } catch (e) {
+    MessagePlugin.error(e.message);
     console.log(e);
   } finally {
     storeListLoading.value = false;
@@ -142,8 +155,8 @@ const fetchDataStoreChange = (value: any) => {
 const fetchData = async () => {
   dataLoading.value = true;
   try {
-    const { userlist, count } = await getUserList({
-      searchValue: searchValue.value,
+    const { records, total } = await BaseList({
+      title: title.value,
       pageNum: pagination.value.defaultCurrent,
       pageSize: pagination.value.defaultPageSize,
       storeId: storeId.value,
@@ -151,15 +164,16 @@ const fetchData = async () => {
     // console.log('userlist', userlist);
 
     // 数据赋值
-    data.value = userlist;
+    data.value = records;
 
     // 分页赋值
     pagination.value = {
       ...pagination.value,
-      total: count,
+      total,
     };
   } catch (e) {
     console.log(e);
+    MessagePlugin.error(e.message);
   } finally {
     dataLoading.value = false;
   }
