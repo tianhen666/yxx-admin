@@ -21,7 +21,7 @@
 
       <!-- 数据导出 -->
       <t-col class="export-btn" :span="2">
-        <t-button variant="base" theme="primary"> 导出店铺数据 </t-button>
+        <t-button variant="base" theme="primary"> 导出店铺列表 </t-button>
       </t-col>
     </t-row>
 

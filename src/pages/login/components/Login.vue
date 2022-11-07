@@ -91,8 +91,8 @@ const userStore = useUserStore();
 
 const INITIAL_DATA: loginInfo = {
   phone: '',
-  admin: 'admin',
-  password: 'yxx2022',
+  admin: '',
+  password: '',
   verifyCode: '',
   checked: false,
 };

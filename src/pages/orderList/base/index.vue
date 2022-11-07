@@ -64,7 +64,7 @@
 
       <!-- 数据导出 -->
       <t-col class="export-btn" :span="2">
-        <t-button variant="base" theme="primary" :disabled="!storeId"> 导出订单数据 </t-button>
+        <t-button variant="base" theme="primary" :disabled="!storeId"> 导出订单列表 </t-button>
       </t-col>
     </t-row>
 

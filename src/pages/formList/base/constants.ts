@@ -4,7 +4,7 @@
  * @Author: TianHen
  * @Date: 2022-11-01 15:50:02
  * @LastEditors: TianHen
- * @LastEditTime: 2022-11-07 17:45:01
+ * @LastEditTime: 2022-11-07 18:44:01
  */
 
 import dayjs from 'dayjs';
@@ -18,9 +18,9 @@ export const COLUMNS = [
     align: 'center',
   },
   {
-    title: '头像',
+    title: '商品封面图',
     colKey: 'mainPic',
-    width: 100,
+    width: 120,
     align: 'center',
   },
   {
@@ -28,7 +28,7 @@ export const COLUMNS = [
     ellipsis: true,
     colKey: 'title',
     align: 'center',
-    width: 300,
+    width: 240,
   },
   {
     title: '开始时间',
@@ -69,6 +69,14 @@ export const COLUMNS = [
     align: 'center',
     width: 120,
     cell: (h: any, { row }: any) => `${row.sold} 单`,
+  },
+  {
+    title: '所属门诊',
+    ellipsis: true,
+    colKey: 'store',
+    align: 'center',
+    width: 180,
+    cell: (h: any, { row }: any) => `${row.store.name}`,
   },
   {
     align: 'left',

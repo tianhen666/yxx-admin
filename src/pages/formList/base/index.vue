@@ -33,7 +33,7 @@
       </t-col>
       <!-- 数据导出 -->
       <t-col class="export-btn" :span="2">
-        <t-button variant="base" theme="primary" :disabled="!storeId"> 导出活动数据 </t-button>
+        <t-button variant="base" theme="primary" :disabled="!storeId"> 导出活动列表 </t-button>
       </t-col>
     </t-row>
 
@@ -52,7 +52,13 @@
       @page-change="rehandlePageChange"
     >
       <template #mainPic="{ row }">
-        <t-avatar shape="round" :image="row.mainPic" alt="无" size="large" />
+        <t-image
+          :lazy="true"
+          :src="row.mainPic"
+          :style="{ width: '100px', height: '80px' }"
+          fit="cover"
+          shape="round"
+        />
       </template>
       <template #op="{ row }">
         <t-link theme="primary" @click.prevent="">详情</t-link>
