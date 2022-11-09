@@ -4,7 +4,7 @@
  * @Author: TianHen
  * @Date: 2022-11-01 15:50:02
  * @LastEditors: TianHen
- * @LastEditTime: 2022-11-07 18:44:01
+ * @LastEditTime: 2022-11-08 10:21:19
  */
 
 import dayjs from 'dayjs';
@@ -18,13 +18,13 @@ export const COLUMNS = [
     align: 'center',
   },
   {
-    title: '商品封面图',
+    title: '封面图',
     colKey: 'mainPic',
     width: 120,
     align: 'center',
   },
   {
-    title: '商品标题',
+    title: '标题',
     ellipsis: true,
     colKey: 'title',
     align: 'center',
