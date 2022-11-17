@@ -4,7 +4,7 @@
  * @Author: TianHen
  * @Date: 2022-11-01 16:08:38
  * @LastEditors: TianHen
- * @LastEditTime: 2022-11-04 16:41:58
+ * @LastEditTime: 2022-11-17 15:31:08
  */
 import { request } from '@/utils/request';
 import type * as tModel from '@/api/model/storeListModel';
@@ -17,6 +17,7 @@ const Api = {
   storeDeleteUser: '/store/deleteUser',
   storeWxAccount: '/storeWxAccount/changeWxAccount',
   storeChangeStore: '/store/changeStore',
+  wxGenerateUrlLink: '/wx/generateUrlLink',
 };
 
 // 获取店铺列表
@@ -75,6 +76,15 @@ export function storeWxAccount(data: any) {
 export function storeChangeStore(data: any) {
   return request.post({
     url: Api.storeChangeStore,
+    data,
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+  });
+}
+
+// 获取小程序短链接
+export function wxGenerateUrlLink(data: any) {
+  return request.post({
+    url: Api.wxGenerateUrlLink,
     data,
     headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
   });

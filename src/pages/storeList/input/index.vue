@@ -84,6 +84,18 @@
             ></t-switch>
           </span>
         </div>
+
+        <div class="info-item">
+          <h1>小程序短链接:</h1>
+          <div>
+            <t-space align="center">
+              <t-button shape="round" size="small" variant="base" theme="primary" @click="getWxGenerateUrlLink"
+                >获取</t-button
+              >
+              <span>{{ generateUrlLink.url_link || '' }}</span>
+            </t-space>
+          </div>
+        </div>
       </div>
     </t-card>
 
@@ -254,6 +266,7 @@ import {
   storeDeleteUser,
   storeWxAccount,
   storeChangeStore,
+  wxGenerateUrlLink,
 } from '@/api/storeList';
 import { getUserList } from '@/api/userList';
 import { INITIAL_DATA, RULES } from './constants';
@@ -263,6 +276,7 @@ const route = useRoute();
 // keep-alive 每次进入缓存组件加载
 onActivated(() => {
   fetchData();
+  generateUrlLink.value = {};
 });
 /**
  * 获取店铺详情
@@ -323,7 +337,20 @@ const switchIsbrand = async (value: any) => {
     loading.value = false;
   }
 };
-
+/**
+ * 获取小程序链接
+ *
+ */
+const generateUrlLink = ref<any>({});
+const getWxGenerateUrlLink = () => {
+  wxGenerateUrlLink({
+    path: '/pages/main/index/index',
+    query: `storeId=${route.query.storeId}`,
+    storeId: route.query.storeId,
+  }).then((res) => {
+    generateUrlLink.value = JSON.parse(decodeURIComponent(res));
+  });
+};
 /**
  * 员工列表
  */
