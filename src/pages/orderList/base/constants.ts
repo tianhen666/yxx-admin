@@ -4,16 +4,43 @@
  * @Author: TianHen
  * @Date: 2022-11-01 15:50:02
  * @LastEditors: TianHen
- * @LastEditTime: 2022-11-07 16:37:02
+ * @LastEditTime: 2022-11-14 10:12:38
  */
 
 import dayjs from 'dayjs';
 
 export const COLUMNS = [
   {
+    title: '所属门诊',
+    ellipsis: true,
+    colKey: 'name',
+    align: 'center',
+    width: 200,
+  },
+  {
+    title: '订单来源',
+    ellipsis: true,
+    colKey: 'orderType',
+    align: 'center',
+    width: 200,
+  },
+  {
+    title: '订单/商品名称',
+    ellipsis: true,
+    colKey: 'product_name',
+    align: 'center',
+    width: 200,
+  },
+  {
+    title: '订单状态',
+    ellipsis: true,
+    colKey: 'status',
+    align: 'center',
+    width: 120,
+  },
+  {
     title: '订单编号',
     colKey: 'order_no',
-    fixed: 'left',
     width: 200,
     align: 'center',
   },
@@ -42,13 +69,6 @@ export const COLUMNS = [
     cell: (h: any, { row }: any) => `${row.price} 元`,
   },
   {
-    title: '订单状态',
-    ellipsis: true,
-    colKey: 'status',
-    align: 'center',
-    width: 120,
-  },
-  {
     title: '订单创建时间',
     ellipsis: true,
     colKey: 'create_dt',
@@ -72,27 +92,6 @@ export const COLUMNS = [
     align: 'center',
     width: 200,
     cell: (h: any, { row }: any) => (row.complete_dt ? dayjs(row.complete_dt).format('YYYY-MM-DD HH:mm:ss') : '--'),
-  },
-  {
-    title: '订单来源',
-    ellipsis: true,
-    colKey: 'orderType',
-    align: 'center',
-    width: 200,
-  },
-  {
-    title: '订单/商品名称',
-    ellipsis: true,
-    colKey: 'product_name',
-    align: 'center',
-    width: 200,
-  },
-  {
-    title: '所属门诊',
-    ellipsis: true,
-    colKey: 'name',
-    align: 'center',
-    width: 200,
   },
   {
     align: 'left',
