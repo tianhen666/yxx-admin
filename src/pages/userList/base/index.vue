@@ -24,8 +24,8 @@
         </t-select>
       </t-col>
       <!-- 数据导出 -->
-      <t-col class="export-btn" :span="2">
-        <t-button variant="base" theme="primary" :disabled="!storeId"> 导出用户列表 </t-button>
+      <t-col class="export-btn" :span="2" @click="userEx">
+        <t-button variant="base" theme="primary" :disabled="!storeId" :loading="exportLoading"> 导出用户列表 </t-button>
       </t-col>
     </t-row>
 
@@ -59,7 +59,7 @@ export default {
 <script setup lang="ts">
 import { SearchIcon } from 'tdesign-icons-vue-next';
 import { ref, onMounted } from 'vue';
-import { getUserList } from '@/api/userList';
+import { getUserList, UserEx } from '@/api/userList';
 import { getStoreList } from '@/api/storeList';
 import { COLUMNS } from './constants';
 
@@ -169,6 +169,18 @@ onMounted(() => {
   fetchData();
   fetchDataStoreList('');
 });
+
+/**
+ *  用户数据导出
+ */
+const exportLoading = ref<boolean>(false);
+const userEx = () => {
+  exportLoading.value = true;
+  UserEx({ storeId: storeId.value }).then((res) => {
+    exportLoading.value = false;
+    window.location.href = res;
+  });
+};
 
 /**
  * 分页变化函数
