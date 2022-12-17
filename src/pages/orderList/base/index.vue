@@ -63,8 +63,10 @@
       </t-col>
 
       <!-- 数据导出 -->
-      <t-col class="export-btn" :span="2" @click="exportData">
-        <t-button variant="base" theme="primary" :disabled="!storeId" :loading="exportLoading"> 导出订单列表 </t-button>
+      <t-col class="export-btn" :span="2">
+        <t-button variant="base" theme="primary" :disabled="!storeId" :loading="exportLoading" @click="exportData">
+          导出订单列表
+        </t-button>
       </t-col>
     </t-row>
 

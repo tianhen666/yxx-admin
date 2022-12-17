@@ -24,8 +24,10 @@
         </t-select>
       </t-col>
       <!-- 数据导出 -->
-      <t-col class="export-btn" :span="2" @click="userEx">
-        <t-button variant="base" theme="primary" :disabled="!storeId" :loading="exportLoading"> 导出用户列表 </t-button>
+      <t-col class="export-btn" :span="2">
+        <t-button variant="base" theme="primary" :disabled="!storeId" :loading="exportLoading" @click="userEx">
+          导出用户列表
+        </t-button>
       </t-col>
     </t-row>
 
