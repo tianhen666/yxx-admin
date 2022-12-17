@@ -63,8 +63,8 @@
       </t-col>
 
       <!-- 数据导出 -->
-      <t-col class="export-btn" :span="2">
-        <t-button variant="base" theme="primary" :disabled="!storeId"> 导出订单列表 </t-button>
+      <t-col class="export-btn" :span="2" @click="exportData">
+        <t-button variant="base" theme="primary" :disabled="!storeId" :loading="exportLoading"> 导出订单列表 </t-button>
       </t-col>
     </t-row>
 
@@ -82,7 +82,7 @@
       :header-affixed-top="true"
       @page-change="rehandlePageChange"
     >
-      <template #op="{ row }">
+      <template #op>
         <t-link theme="primary" @click.prevent="">详情</t-link>
       </template>
     </t-table>
@@ -96,14 +96,14 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
+// import { useRouter } from 'vue-router';
 import { SearchIcon } from 'tdesign-icons-vue-next';
 import { ref, onMounted } from 'vue';
 import { getStoreList } from '@/api/storeList';
-import { BaseList } from '@/api/orderList';
+import { BaseList, ExportData } from '@/api/orderList';
 import { COLUMNS } from './constants';
 
-const router = useRouter();
+// const router = useRouter();
 
 // 分页配置
 const pageSizeOptions = [
@@ -142,7 +142,7 @@ const paginationStore = ref({
 });
 
 /**
- * 获取店铺列表函数
+ * 获取店铺列表数据
  * @param searchStoreName 店铺名称
  */
 const fetchDataStoreList = async (searchStoreName: string) => {
@@ -168,8 +168,9 @@ const fetchDataStoreList = async (searchStoreName: string) => {
     storeListLoading.value = false;
   }
 };
+
 /**
- * 更换店铺筛选
+ * 通过店铺筛选
  * @param value 选择的店铺ID
  */
 const fetchDataStoreChange = (value: any) => {
@@ -179,7 +180,7 @@ const fetchDataStoreChange = (value: any) => {
 };
 
 /**
- * 切换来源
+ * 切换商品订单或者活动订单筛选
  */
 const enrollId = ref(-1);
 const fetchDataEnrollIdChange = (value: number) => {
@@ -199,7 +200,7 @@ const fetchDataStatusChange = (value: number) => {
 };
 
 /**
- * 获取数据函数
+ * 获取订单列表数据
  */
 const fetchData = async () => {
   dataLoading.value = true;
@@ -236,6 +237,18 @@ onMounted(() => {
   fetchData();
   fetchDataStoreList('');
 });
+
+/**
+ *  订单数据导出
+ */
+const exportLoading = ref<boolean>(false);
+const exportData = () => {
+  exportLoading.value = true;
+  ExportData({ storeId: storeId.value }).then((res) => {
+    exportLoading.value = false;
+    window.location.href = res;
+  });
+};
 
 /**
  * 分页变化函数
