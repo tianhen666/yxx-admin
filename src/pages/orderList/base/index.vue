@@ -248,7 +248,7 @@ const exportData = () => {
   exportLoading.value = true;
   ExportData({ storeId: storeId.value }).then((res) => {
     exportLoading.value = false;
-    window.location.href = res;
+    window.location.href = res.replace('http', 'https');
   });
 };
 
