@@ -360,6 +360,7 @@ const powerName = [
   { label: '管理员', value: 2 },
   { label: '商品管理', value: 3 },
   { label: '活动管理', value: 4 },
+  { label: '订单核销', value: 5 },
 ];
 const powerEdit = ref(-1);
 const powerAdd = ref('');
