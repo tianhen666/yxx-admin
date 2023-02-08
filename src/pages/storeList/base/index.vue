@@ -124,7 +124,11 @@ const hStoreListExcel = async () => {
     const resData = await storeListExcel({
       storeName: "全部店铺数据",
     });
+    if(!resData.includes('https')){
+      resData.replace('http','https')
+    }
     window.location.href = resData
+    
   } catch (e) {
     console.log(e);
   } finally {
