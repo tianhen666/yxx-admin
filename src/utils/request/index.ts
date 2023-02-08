@@ -7,8 +7,8 @@ import proxy from '@/config/proxy';
 import { joinTimestamp, formatRequestDate, setObjToUrlParams } from './utils';
 import { TOKEN_NAME } from '@/config/global';
 
+console.log(import.meta)
 const env = import.meta.env.MODE || 'development';
-console.log('当前启动模式', env);
 
 // 如果是mock模式 或 没启用直连代理 就不配置host 会走本地Mock拦截 或 Vite 代理
 const host = env === 'mock' || !proxy.isRequestProxy ? '' : proxy[env].host;

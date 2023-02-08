@@ -1,11 +1,3 @@
-/*
- * @Descripttion:
- * @version:
- * @Author: TianHen
- * @Date: 2022-10-31 14:32:05
- * @LastEditors: TianHen
- * @LastEditTime: 2022-11-01 14:09:30
- */
 import { ConfigEnv, UserConfig, loadEnv } from 'vite';
 import { viteMockServe } from 'vite-plugin-mock';
 import createVuePlugin from '@vitejs/plugin-vue';

@@ -1,12 +1,3 @@
-/*
- * @Descripttion:
- * @version:
- * @Author: TianHen
- * @Date: 2022-11-01 15:50:02
- * @LastEditors: TianHen
- * @LastEditTime: 2022-11-07 18:24:28
- */
-
 import dayjs from 'dayjs';
 
 export const COLUMNS = [
@@ -71,7 +62,7 @@ export const COLUMNS = [
   {
     align: 'left',
     fixed: 'right',
-    width: 160,
+    width: 120,
     colKey: 'op',
     title: '操作',
   },

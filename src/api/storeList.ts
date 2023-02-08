@@ -1,11 +1,3 @@
-/*
- * @Descripttion:
- * @version:
- * @Author: TianHen
- * @Date: 2022-11-01 16:08:38
- * @LastEditors: TianHen
- * @LastEditTime: 2022-11-17 15:31:08
- */
 import { request } from '@/utils/request';
 import type * as tModel from '@/api/model/storeListModel';
 
@@ -18,6 +10,8 @@ const Api = {
   storeWxAccount: '/storeWxAccount/changeWxAccount',
   storeChangeStore: '/store/changeStore',
   wxGenerateUrlLink: '/wx/generateUrlLink',
+  storeDelete:'/store/deleteStore',
+  storeListExcel:'/store/storeListExcel'
 };
 
 // 获取店铺列表
@@ -85,6 +79,24 @@ export function storeChangeStore(data: any) {
 export function wxGenerateUrlLink(data: any) {
   return request.post({
     url: Api.wxGenerateUrlLink,
+    data,
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+  });
+}
+
+// 删除门店
+export function storeDelete(data: any) {
+  return request.post({
+    url: Api.storeDelete,
+    data,
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+  });
+}
+
+// 删除门店
+export function storeListExcel(data: any) {
+  return request.post({
+    url: Api.storeListExcel,
     data,
     headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
   });
