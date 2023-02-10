@@ -3,6 +3,7 @@ node_modules
 .vscode
 .husky
 .github
+*.log
 # build files
 es/
 lib/

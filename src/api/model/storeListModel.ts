@@ -27,6 +27,7 @@ export interface requestModel {
   searchStoreName: string;
   pageNum: number;
   pageSize: number;
+  moneySort:number;
 }
 
 export interface requestModel2 {

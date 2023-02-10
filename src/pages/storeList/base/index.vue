@@ -1,29 +1,34 @@
 <template>
   <t-card class="list-card-container">
     <!-- 列表头部 -->
-    <t-row align="center" class="table-list-header" :gutter="16">
+    <t-row align="center" class="table-list-header lp-mb-[20px]" :gutter="16">
       <!-- 搜索 -->
       <t-col class="search-input" :span="2">
-        <t-input v-model="searchStoreName" placeholder="输入店铺名搜索" clearable @enter="
-  paginationStore.defaultCurrent = 1;
-fetchDataStoreList();
-        ">
+        <t-input v-model="searchStoreName" placeholder="输入店铺名搜索" clearable
+          @enter="paginationStore.current = 1; fetchDataStoreList();">
           <template #suffix-icon>
             <search-icon size="20px" />
           </template>
         </t-input>
       </t-col>
 
-      <!-- 数据导出 -->
-      <t-col class="export-btn" :span="2">
-        <t-button variant="base" theme="primary" @click.stop="hStoreListExcel"> 导出店铺列表 </t-button>
+      <!-- 搜索 -->
+      <t-col :span="8">
+        <t-button variant="base" theme="primary" @click.stop="paginationStore.current = 1; fetchDataStoreList();">
+          搜索 </t-button>
+      </t-col>
+
+      <t-col :span="2">
+        <t-button theme="success" variant="dashed" block @click.stop="hStoreListExcel">导出excel<template #icon>
+            <CloudDownloadIcon />
+          </template></t-button>
       </t-col>
     </t-row>
-
     <!-- 列表内容 -->
-    <t-table class="table-box" :data="storeListData" :columns="COLUMNS" row-key="storeId" :hover="true"
+    <t-table class="table-box" :sort="sort" :data="storeListData" :columns="COLUMNS" row-key="storeId" :hover="true"
       max-height="calc(100% - 64px)" :scroll="{ type: 'lazy', bufferSize: 100 }" :pagination="paginationStore"
-      :loading="storeListLoading" :header-affixed-top="true" @page-change="rehandlePageChange">
+      :loading="storeListLoading" :header-affixed-top="true" @sort-change="sortChange"
+      @page-change="rehandlePageChange">
       <template #icon="{ row }">
         <t-avatar :image="row.icon" alt="无" size="large" />
       </template>
@@ -57,6 +62,7 @@ import { useRouter } from 'vue-router';
 import { SearchIcon } from 'tdesign-icons-vue-next';
 import { getStoreList, storeDelete, storeListExcel } from '@/api/storeList';
 import { COLUMNS } from './constants';
+import { CloudDownloadIcon } from "tdesign-icons-vue-next"
 
 const router = useRouter();
 
@@ -75,8 +81,9 @@ const fetchDataStoreList = async () => {
   try {
     const { records, total } = await getStoreList({
       searchStoreName: searchStoreName.value,
-      pageNum: paginationStore.value.defaultCurrent,
-      pageSize: paginationStore.value.defaultPageSize,
+      pageNum: paginationStore.value.current,
+      pageSize: paginationStore.value.pageSize,
+      moneySort: sort.value && (sort.value.descending ? 0 : 1)   // 0降序, 1升序
     });
 
     // 数据赋值
@@ -97,6 +104,23 @@ const fetchDataStoreList = async () => {
 onMounted(() => {
   fetchDataStoreList();
 });
+
+
+/**
+ * 排序
+ */
+const sort = ref({
+  sortBy: 'money',
+  descending: true,
+});
+
+// 金额排序
+const sortChange = (val) => {
+  sort.value = val;
+  restPage()
+  fetchDataStoreList()
+
+};
 
 
 /* 删除门诊 */
@@ -124,11 +148,11 @@ const hStoreListExcel = async () => {
     const resData = await storeListExcel({
       storeName: "全部店铺数据",
     });
-    if(!resData.includes('https')){
-      resData.replace('http','https')
+    if (!resData.includes('https')) {
+      resData.replace('http', 'https')
     }
     window.location.href = resData
-    
+
   } catch (e) {
     console.log(e);
   } finally {
@@ -148,9 +172,9 @@ const pageSizeOptions = [
 ];
 // 店铺列表分页
 const paginationStore = ref({
-  defaultPageSize: 10,
+  pageSize: 10,
   total: 0,
-  defaultCurrent: 1,
+  current: 1,
   pageSizeOptions,
 });
 /**
@@ -159,18 +183,16 @@ const paginationStore = ref({
  * @param pageInfo 分页数据
  */
 const rehandlePageChange = (curr: { current: number; pageSize: number }, pageInfo: any) => {
-  // console.log(curr, pageInfo);
-
   // 分页重新赋值
   const { current, pageSize } = curr;
-  paginationStore.value.defaultCurrent = current;
-  paginationStore.value.defaultPageSize = pageSize;
+  paginationStore.value.current = current;
+  paginationStore.value.pageSize = pageSize;
 
   // 重新获取数据
   fetchDataStoreList();
 };
+// 重置分页
+const restPage = () => {
+  paginationStore.value.current = 1
+}
 </script>
-
-<style lang="less" scoped>
-
-</style>

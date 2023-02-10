@@ -28,23 +28,10 @@
           <div>
             <t-space align="center">
               <span v-if="!expirationTime">{{ dayjs(dataObj.expireDt).format('YYYY-MM-DD HH:mm:ss') }}</span>
-              <t-date-picker
-                v-if="expirationTime"
-                v-model="dataObj.expireDt"
-                style="width: 180px"
-                size="small"
-                placeholder="选择时间"
-                allow-input
-                enable-time-picker
-              />
-              <t-button
-                shape="round"
-                size="small"
-                :variant="expirationTime ? 'base' : 'dashed'"
-                theme="primary"
-                @click="!expirationTime ? (expirationTime = !expirationTime) : setExpirationTime()"
-                >设置到期时间</t-button
-              >
+              <t-date-picker v-if="expirationTime" v-model="dataObj.expireDt" style="width: 180px" size="small"
+                placeholder="选择时间" allow-input enable-time-picker />
+              <t-button shape="round" size="small" :variant="expirationTime ? 'base' : 'dashed'" theme="primary"
+                @click="!expirationTime ? (expirationTime = !expirationTime) : setExpirationTime()">设置到期时间</t-button>
             </t-space>
           </div>
         </div>
@@ -75,13 +62,8 @@
         <div class="info-item">
           <h1>品牌分账:</h1>
           <span>
-            <t-switch
-              :value="dataObj.isbrand || 0"
-              size="large"
-              :custom-value="[1, 0]"
-              :label="['开', '关']"
-              @change="switchIsbrand"
-            ></t-switch>
+            <t-switch :value="dataObj.isbrand || 0" size="large" :custom-value="[1, 0]" :label="['开', '关']"
+              @change="switchIsbrand"></t-switch>
           </span>
         </div>
 
@@ -89,9 +71,8 @@
           <h1>小程序短链接:</h1>
           <div>
             <t-space align="center">
-              <t-button shape="round" size="small" variant="base" theme="primary" @click="getWxGenerateUrlLink"
-                >获取</t-button
-              >
+              <t-button shape="round" size="small" variant="base" theme="primary"
+                @click="getWxGenerateUrlLink">获取</t-button>
               <span>{{ generateUrlLink.url_link || '' }}</span>
             </t-space>
           </div>
@@ -103,15 +84,8 @@
     <t-row :gutter="16">
       <t-col :sm="6" :xs="12">
         <t-card title="小程序和支付配置" style="max-height: 510px; overflow-y: auto">
-          <t-form
-            :label-width="120"
-            label-align="left"
-            colon
-            :rules="RULES"
-            :data="formData"
-            status-icon
-            @submit="onSubmit"
-          >
+          <t-form :label-width="120" label-align="left" colon :rules="RULES" :data="formData" status-icon
+            @submit="onSubmit">
             <t-form-item label="微信商户编号" name="merchantId">
               <t-input v-model="formData.merchantId" placeholder="请输入内容" />
             </t-form-item>
@@ -138,26 +112,13 @@
           <template #actions>
             <t-row :gutter="16">
               <t-col :span="4" :offset="3">
-                <t-select
-                  v-if="powerAdd == 'add'"
-                  v-model="userId"
-                  size="small"
-                  filterable
-                  :options="userListoptions"
-                  placeholder="选择用户"
-                  :loading="userLoading"
-                  :on-search="fetchDataUserList"
-                >
+                <t-select v-if="powerAdd == 'add'" v-model="userId" size="small" filterable :options="userListoptions"
+                  placeholder="选择用户" :loading="userLoading" :on-search="fetchDataUserList">
                 </t-select>
               </t-col>
               <t-col :span="3">
-                <t-select
-                  v-if="powerAdd == 'add'"
-                  v-model="powerId"
-                  :options="powerName"
-                  size="small"
-                  placeholder="选择权限"
-                />
+                <t-select v-if="powerAdd == 'add'" v-model="powerId" :options="powerName" size="small"
+                  placeholder="选择权限" />
               </t-col>
               <t-col :span="2" style="text-align: right">
                 <a v-if="powerAdd == 'add'" href="javascript:void(0)" @click="powerSaveFun(userId, powerId)">保存</a>
@@ -171,33 +132,20 @@
                 <t-list-item-meta :image="item.avatar" :title="item.nickname">
                   <template #description>
                     <t-tag v-if="powerEdit != index" theme="primary">{{ powerName[item.userPower.power].label }}</t-tag>
-                    <t-select
-                      v-if="powerEdit == index"
-                      v-model="item.userPower.power"
-                      :options="powerName"
-                      size="small"
-                      placeholder="选择权限"
-                    />
+                    <t-select v-if="powerEdit == index" v-model="item.userPower.power" :options="powerName" size="small"
+                      placeholder="选择权限" />
                   </template>
                 </t-list-item-meta>
                 <template #action>
                   <t-button v-if="powerEdit != index" variant="text" shape="square" @click="powerEdit = index">
                     <edit1-icon style="color: var(--td-brand-color)" />
                   </t-button>
-                  <t-button
-                    v-if="powerEdit != index"
-                    variant="text"
-                    shape="square"
-                    @click="powerDeFun(item.userPower.id)"
-                  >
+                  <t-button v-if="powerEdit != index" variant="text" shape="square"
+                    @click="powerDeFun(item.userPower.id)">
                     <delete-icon style="color: var(--td-error-color)" />
                   </t-button>
-                  <t-button
-                    v-if="powerEdit == index"
-                    variant="text"
-                    shape="square"
-                    @click="powerSaveFun(item.id, item.userPower.power)"
-                  >
+                  <t-button v-if="powerEdit == index" variant="text" shape="square"
+                    @click="powerSaveFun(item.id, item.userPower.power)">
                     <check-circle-icon style="color: var(--td-success-color)" />
                   </t-button>
                 </template>
@@ -210,6 +158,7 @@
 
     <div style="height: 26px"></div>
     <t-row :gutter="16">
+
       <t-col :sm="6" :xs="12">
         <t-card title="活动列表" style="max-height: 510px; overflow-y: auto">
           <t-list :split="true" size="small">
@@ -220,6 +169,9 @@
                     <div class="des_content">
                       {{ item.content }}
                     </div>
+                    <div class="lp-mt-[10px]">
+                      <div class="lp-font-bold lp-text-red-700">收益:{{ item.money || 0 }}元</div>
+                    </div>
                   </template>
                 </t-list-item-meta>
               </t-list-item>
@@ -227,6 +179,7 @@
           </t-list>
         </t-card>
       </t-col>
+
       <t-col :sm="6" :xs="12" style="max-height: 510px; overflow-y: auto">
         <t-card title="商品列表">
           <t-list :split="true" size="small">
@@ -237,6 +190,9 @@
                     <div class="des_content">
                       {{ item.descData }}
                     </div>
+                    <div class="lp-mt-[10px]">
+                      <div class="lp-font-bold lp-text-red-700">收益:{{ item.money || 0 }}元</div>
+                    </div>
                   </template>
                 </t-list-item-meta>
               </t-list-item>
@@ -244,6 +200,7 @@
           </t-list>
         </t-card>
       </t-col>
+
     </t-row>
   </div>
 </template>
@@ -459,14 +416,17 @@ const onSubmit = async ({ validateResult }) => {
 
 <style lang="less" scoped>
 @import url('./index.less');
+
 :deep(.myCard) {
   .t-card__header-wrapper {
     flex: none;
   }
+
   .t-card__actions {
     flex: auto;
   }
 }
+
 .des_content {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -474,6 +434,7 @@ const onSubmit = async ({ validateResult }) => {
   overflow: hidden;
   color: var(--td-gray-color-6);
 }
+
 :deep(.t-space-item) {
   line-height: 1;
 }

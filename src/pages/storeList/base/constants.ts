@@ -5,7 +5,7 @@ export const COLUMNS = [
     title: 'ID',
     colKey: 'storeId',
     fixed: 'left',
-    width: 100,
+    width: 80,
     align: 'center',
   },
   {
@@ -27,6 +27,16 @@ export const COLUMNS = [
     colKey: 'contactName',
     ellipsis: true,
     align: 'center',
+  },
+  {
+    title: '收益总金额',
+    colKey: 'money',
+    sortType:"all",
+    sorter:true,
+    width: 180,
+    ellipsis: true,
+    align: 'center',
+    cell: (h: any, { row }: any) => row.money?row.money + '元':'--',
   },
   {
     title: '手机号',

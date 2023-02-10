@@ -19,7 +19,7 @@ const mode = computed(() => {
   return store.displayMode;
 });
 </script>
-<style lang="less" scoped>
+<style lang="less">
 // 表单样式自定义
 :deep(.table-box) {
   height: calc(100vh - 63px - 24px - 16px - 60px - 50px);
