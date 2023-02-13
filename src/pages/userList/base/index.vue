@@ -1,7 +1,7 @@
 <template>
   <t-card class="list-card-container">
     <!-- 列表头部 -->
-    <t-row align="center" class="table-list-header" :gutter="16">
+    <t-row align="center" class="table-list-header lp-mb-[20px]" :gutter="16">
       <!-- 搜索 -->
       <t-col class="search-input" :span="2">
         <t-input v-model="searchValue" placeholder="输入用户名或手机号搜索" clearable @enter="fetchData">
