@@ -93,6 +93,14 @@ export const COLUMNS = [
     align: 'center',
     width: 200,
   },
+  {
+    title: '分账金额',
+    ellipsis: true,
+    colKey: 'share_price',
+    align: 'center',
+    width: 200,
+    cell: (h: any, { row }: any) => `${row.share_price}元`,
+  },
 
   {
     title: '订单创建时间',
