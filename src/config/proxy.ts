@@ -10,7 +10,7 @@ export default {
   isRequestProxy: true,
   development: {
     // 开发环境接口请求
-    host: 'https://yxxadminapi.lechiwl.com' || 'http://localhost:3002',
+    host: 'https://yxxadminapi.lechiwl.com' || 'http://localhost:8090',
     // 开发环境 cdn 路径
     cdn: '',
   },

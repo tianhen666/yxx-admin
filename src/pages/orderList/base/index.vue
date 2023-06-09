@@ -37,11 +37,28 @@
           v-model="enrollId"
           placeholder="全部订单"
           :options="[
-            { label: '全部订单', value: -1 },
+            { label: '全部订单', value: null },
             { label: '商品订单', value: 0 },
             { label: '活动订单', value: 1 },
           ]"
           :on-change="fetchDataEnrollIdChange"
+        >
+        </t-select>
+      </t-col>
+
+      <!-- 分账状态 -->
+      <t-col class="select-box" :span="2">
+        <t-select
+          v-model="isDeal"
+          placeholder="分账状态"
+          :options="[
+            { label: '全部分账状态', value: null },
+            { label: '分账失败', value: -1 },
+            { label: '无需分账', value: 0 },
+            { label: '分账成功', value: 1 },
+            { label: '手动分账成功', value: 2 },
+          ]"
+          :on-change="fetchDataisDealChange"
         >
         </t-select>
       </t-col>
@@ -52,7 +69,7 @@
           v-model="status"
           placeholder="订单状态"
           :options="[
-            { label: '全部状态', value: 0 },
+            { label: '全部订单状态', value: null },
             { label: '待付款', value: 1 },
             { label: '待使用', value: 2 },
             { label: '已完成', value: 3 },
@@ -195,7 +212,7 @@ const data = ref([]);
 // 搜索参数
 const searchValue = ref('');
 // 根据店铺查询
-const storeId = ref(0);
+const storeId = ref(null);
 // 加载中
 const dataLoading = ref(false);
 
@@ -246,7 +263,7 @@ const fetchDataStoreList = async (searchStoreName: string) => {
  * @param value 选择的店铺ID
  */
 const fetchDataStoreChange = (value: any) => {
-  storeId.value = value || 0;
+  storeId.value = value;
   pagination.value.defaultCurrent = 1;
   fetchData();
 };
@@ -254,7 +271,7 @@ const fetchDataStoreChange = (value: any) => {
 /**
  * 切换商品订单或者活动订单筛选
  */
-const enrollId = ref(-1);
+const enrollId = ref(null);
 const fetchDataEnrollIdChange = (value: number) => {
   enrollId.value = value;
   pagination.value.defaultCurrent = 1;
@@ -264,9 +281,18 @@ const fetchDataEnrollIdChange = (value: number) => {
 /**
  * 切换订单状态
  */
-const status = ref(0);
+const status = ref(null);
 const fetchDataStatusChange = (value: number) => {
   status.value = value;
+  pagination.value.defaultCurrent = 1;
+  fetchData();
+};
+
+/**
+ * 切换分账状态
+ */
+const isDeal = ref(null);
+const fetchDataisDealChange = (value: number) => {
   pagination.value.defaultCurrent = 1;
   fetchData();
 };
@@ -278,6 +304,7 @@ const fetchData = async () => {
   dataLoading.value = true;
   try {
     const { userlist, count } = await BaseList({
+      isDeal: isDeal.value,
       status: status.value,
       enrollId: enrollId.value,
       searchValue: searchValue.value,
@@ -287,8 +314,6 @@ const fetchData = async () => {
       pageSize: pagination.value.defaultPageSize,
       storeId: storeId.value,
     });
-    // console.log('userlist', userlist);
-    // console.log('count', count);
 
     // 数据赋值
     data.value = userlist;

@@ -26,6 +26,15 @@ export const COLUMNS = [
       row.nickname || h('span', { style: { color: '#aaa' } }, '未授权'),
   },
   {
+    title: '分账类型',
+    ellipsis: true,
+    colKey: 'isbrand',
+    align: 'center',
+    width: 200,
+    cell: (h: any, { row }: any) =>
+      row.isbrand === 0 ? '普通分账' : row.isbrand === 1 ? '品牌分账' : '',
+  },
+  {
     title: '购买人手机号',
     colKey: 'mobile',
     ellipsis: true,
