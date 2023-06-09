@@ -1,7 +1,7 @@
 <template>
   <t-card class="list-card-container">
     <!-- 列表头部 -->
-    <t-row align="center" class="table-list-header" :gutter="16">
+    <t-row align="center" class="table-list-header lp-mb-[20px]" :gutter="16">
       <!-- 搜索 -->
       <t-col class="search-input" :span="2">
         <t-input
@@ -64,30 +64,96 @@
 
       <!-- 数据导出 -->
       <t-col class="export-btn" :span="2">
-        <t-button variant="base" theme="primary" :disabled="!storeId" :loading="exportLoading" @click="exportData">
+        <t-button
+          variant="base"
+          theme="primary"
+          :disabled="!storeId"
+          :loading="exportLoading"
+          @click="exportData"
+        >
           导出订单列表
         </t-button>
       </t-col>
     </t-row>
+    <t-loading :loading="loading">
+      <!-- 列表内容 -->
+      <t-table
+        class="table-box"
+        :data="data"
+        bordered
+        :columns="COLUMNS"
+        row-key="id"
+        :hover="true"
+        max-height="calc(100% - 64px)"
+        :scroll="{ type: 'lazy', bufferSize: 100 }"
+        :pagination="pagination"
+        :loading="dataLoading"
+        @page-change="rehandlePageChange"
+      >
+        <template #op="{ row }">
+          <t-link theme="primary" @click.prevent="DivideAccountsFQM(row)"
+            >查询分账结果</t-link
+          >
+        </template>
+        <template #status="{ row }">
+          <t-tag
+            :theme="
+              row.status === '待使用'
+                ? 'primary'
+                : row.status === '已完成'
+                ? 'success'
+                : row.status === '待付款'
+                ? 'danger'
+                : ''
+            "
+            variant="light-outline"
+            >{{ row.status }}
+            <template #icon>
+              <t-icon
+                :name="
+                  row.status === '待使用'
+                    ? 'help-circle-filled'
+                    : row.status === '已完成'
+                    ? 'check-circle-filled'
+                    : row.status === '待付款'
+                    ? 'error-circle-filled'
+                    : ''
+                "
+              />
+            </template>
+          </t-tag>
+        </template>
 
-    <!-- 列表内容 -->
-    <t-table
-      class="table-box"
-      :data="data"
-      :columns="COLUMNS"
-      row-key="id"
-      :hover="true"
-      max-height="calc(100% - 64px)"
-      :scroll="{ type: 'lazy', bufferSize: 100 }"
-      :pagination="pagination"
-      :loading="dataLoading"
-      :header-affixed-top="true"
-      @page-change="rehandlePageChange"
-    >
-      <template #op>
-        <t-link theme="primary" @click.prevent="">详情</t-link>
-      </template>
-    </t-table>
+        <template #isdeal="{ row }">
+          <t-tag
+            :theme="
+              row.isdeal == '-1'
+                ? 'danger'
+                : row.isdeal == '0'
+                ? 'default'
+                : row.isdeal == '1'
+                ? 'success'
+                : row.isdeal == '2'
+                ? 'primary'
+                : ''
+            "
+            variant="light-outline"
+          >
+            {{
+              row.isdeal == '-1'
+                ? '分账失败'
+                : row.isdeal == '0'
+                ? '不需要分账'
+                : row.isdeal == '1'
+                ? '分账成功'
+                : row.isdeal == '2'
+                ? '手动分账成功'
+                : ''
+            }}
+          </t-tag>
+        </template>
+      </t-table>
+    </t-loading>
   </t-card>
 </template>
 
@@ -98,15 +164,16 @@ export default {
 </script>
 
 <script setup lang="ts">
+import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next';
 // import { useRouter } from 'vue-router';
 import { SearchIcon } from 'tdesign-icons-vue-next';
 import { ref, onMounted } from 'vue';
 import { getStoreList } from '@/api/storeList';
-import { BaseList, ExportData } from '@/api/orderList';
+import { BaseList, ExportData, DivideAccountsFQ } from '@/api/orderList';
 import { COLUMNS } from './constants';
 
 // const router = useRouter();
-
+const loading = ref(false);
 // 分页配置
 const pageSizeOptions = [
   { label: '每页 10 条', value: 10 },
@@ -157,7 +224,10 @@ const fetchDataStoreList = async (searchStoreName: string) => {
     });
 
     // 数据赋值
-    storeListData.value = records.map((item) => ({ label: item.name, value: item.storeId }));
+    storeListData.value = records.map((item) => ({
+      label: item.name,
+      value: item.storeId,
+    }));
 
     // 分页赋值
     paginationStore.value = {
@@ -257,7 +327,10 @@ const exportData = () => {
  * @param curr 分页参数
  * @param pageInfo 分页数据
  */
-const rehandlePageChange = (curr: { current: number; pageSize: number }, pageInfo: any) => {
+const rehandlePageChange = (
+  curr: { current: number; pageSize: number },
+  pageInfo: any,
+) => {
   // console.log(curr, pageInfo);
 
   // 分页重新赋值
@@ -267,6 +340,34 @@ const rehandlePageChange = (curr: { current: number; pageSize: number }, pageInf
 
   // 重新获取数据
   fetchData();
+};
+
+/**
+ * 查询分账结果
+ */
+const DivideAccountsFQM = async (item: any) => {
+  if (!item.store_id || !item.out_order_no) {
+    MessagePlugin.error({
+      content: '这个订单不支持查询',
+    });
+    return;
+  }
+
+  loading.value = true;
+  const res = await DivideAccountsFQ({
+    storeId: item.store_id,
+    outOrderNo: item.out_order_no,
+  });
+
+  if (res.receivers) {
+    res.receivers = JSON.parse(res.receivers);
+  }
+  DialogPlugin.alert({
+    header: '查询分账详情',
+    body: JSON.stringify(res),
+  });
+
+  loading.value = false;
 };
 </script>
 

@@ -11,6 +11,7 @@ import { request } from '@/utils/request';
 const Api = {
   BaseList: '/storeProductOrder/productOrderList',
   ExportData: '/exportData/storeOrderEx',
+  DivideAccountsFQ: '/DivideAccounts/profitsharing/queryorders',
 };
 
 // 获取用户列表
@@ -18,7 +19,9 @@ export function BaseList(data: any) {
   return request.post({
     url: Api.BaseList,
     data,
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    },
   });
 }
 
@@ -27,6 +30,21 @@ export function ExportData(params: any) {
   return request.get({
     url: Api.ExportData,
     params,
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    },
+  });
+}
+
+export interface DivideAccountsFQRequestModel {
+  storeId: string;
+  outOrderNo: string;
+}
+
+// 查询分账结果
+export function DivideAccountsFQ(params: DivideAccountsFQRequestModel) {
+  return request.get({
+    url: Api.DivideAccountsFQ,
+    params,
   });
 }
