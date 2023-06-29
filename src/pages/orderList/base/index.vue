@@ -64,7 +64,13 @@
 
       <!-- 数据导出 -->
       <t-col class="export-btn" :span="2">
-        <t-button variant="base" theme="primary" :disabled="!storeId" :loading="exportLoading" @click="exportData">
+        <t-button
+          variant="base"
+          theme="primary"
+          :disabled="!storeId"
+          :loading="exportLoading"
+          @click="exportData"
+        >
           导出订单列表
         </t-button>
       </t-col>
@@ -157,7 +163,10 @@ const fetchDataStoreList = async (searchStoreName: string) => {
     });
 
     // 数据赋值
-    storeListData.value = records.map((item) => ({ label: item.name, value: item.storeId }));
+    storeListData.value = records.map((item) => ({
+      label: item.name,
+      value: item.storeId,
+    }));
 
     // 分页赋值
     paginationStore.value = {
@@ -248,7 +257,7 @@ const exportData = () => {
   exportLoading.value = true;
   ExportData({ storeId: storeId.value }).then((res) => {
     exportLoading.value = false;
-    window.location.href = res.replace('http', 'https');
+    window.location.href = res.replace('http://', 'https://');
   });
 };
 
@@ -257,7 +266,10 @@ const exportData = () => {
  * @param curr 分页参数
  * @param pageInfo 分页数据
  */
-const rehandlePageChange = (curr: { current: number; pageSize: number }, pageInfo: any) => {
+const rehandlePageChange = (
+  curr: { current: number; pageSize: number },
+  pageInfo: any,
+) => {
   // console.log(curr, pageInfo);
 
   // 分页重新赋值

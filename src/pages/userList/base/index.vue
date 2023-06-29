@@ -180,7 +180,7 @@ const userEx = () => {
   exportLoading.value = true;
   UserEx({ storeId: storeId.value }).then((res) => {
     exportLoading.value = false;
-    window.location.href = res.replace('http', 'https');
+    window.location.href = res.replace('http://', 'https://');
   });
 };
 
