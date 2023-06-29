@@ -1,7 +1,7 @@
 <template>
   <t-card class="list-card-container">
     <!-- 列表头部 -->
-    <t-row align="center" class="table-list-header" :gutter="16">
+    <t-row align="center" class="table-list-header lp-mb-[20px]" :gutter="16">
       <!-- 搜索 -->
       <t-col class="search-input" :span="2">
         <t-input
@@ -33,10 +33,11 @@
       </t-col>
       <!-- 数据导出 -->
       <t-col class="export-btn" :span="2">
-        <t-button variant="base" theme="primary" :disabled="!storeId"> 导出活动列表 </t-button>
+        <t-button variant="base" theme="primary" :disabled="!storeId">
+          导出活动列表
+        </t-button>
       </t-col>
     </t-row>
-
     <!-- 列表内容 -->
     <t-table
       class="table-box"
@@ -131,7 +132,10 @@ const fetchDataStoreList = async (searchStoreName: string) => {
     });
 
     // 数据赋值
-    storeListData.value = records.map((item) => ({ label: item.name, value: item.storeId }));
+    storeListData.value = records.map((item) => ({
+      label: item.name,
+      value: item.storeId,
+    }));
 
     // 分页赋值
     paginationStore.value = {
@@ -195,7 +199,10 @@ onMounted(() => {
  * @param curr 分页参数
  * @param pageInfo 分页数据
  */
-const rehandlePageChange = (curr: { current: number; pageSize: number }, pageInfo: any) => {
+const rehandlePageChange = (
+  curr: { current: number; pageSize: number },
+  pageInfo: any,
+) => {
   // console.log(curr, pageInfo);
 
   // 分页重新赋值
