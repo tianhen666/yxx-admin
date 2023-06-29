@@ -1,7 +1,7 @@
 <template>
   <t-card class="list-card-container">
     <!-- 列表头部 -->
-    <t-row align="center" class="table-list-header" :gutter="16">
+    <t-row align="center" class="table-list-header lp-mb-[20px]" :gutter="16">
       <!-- 搜索 -->
       <t-col class="search-input" :span="2">
         <t-input
@@ -37,11 +37,28 @@
           v-model="enrollId"
           placeholder="全部订单"
           :options="[
-            { label: '全部订单', value: -1 },
+            { label: '全部订单', value: null },
             { label: '商品订单', value: 0 },
             { label: '活动订单', value: 1 },
           ]"
           :on-change="fetchDataEnrollIdChange"
+        >
+        </t-select>
+      </t-col>
+
+      <!-- 分账状态 -->
+      <t-col class="select-box" :span="2">
+        <t-select
+          v-model="isDeal"
+          placeholder="分账状态"
+          :options="[
+            { label: '全部分账状态', value: null },
+            { label: '分账失败', value: -1 },
+            { label: '无需分账', value: 0 },
+            { label: '分账成功', value: 1 },
+            { label: '手动分账成功', value: 2 },
+          ]"
+          :on-change="fetchDataisDealChange"
         >
         </t-select>
       </t-col>
@@ -52,7 +69,7 @@
           v-model="status"
           placeholder="订单状态"
           :options="[
-            { label: '全部状态', value: 0 },
+            { label: '全部订单状态', value: null },
             { label: '待付款', value: 1 },
             { label: '待使用', value: 2 },
             { label: '已完成', value: 3 },
@@ -75,25 +92,85 @@
         </t-button>
       </t-col>
     </t-row>
+    <t-loading :loading="loading">
+      <!-- 列表内容 -->
+      <t-table
+        class="table-box"
+        :data="data"
+        bordered
+        :columns="COLUMNS"
+        row-key="id"
+        :hover="true"
+        max-height="calc(100% - 64px)"
+        :scroll="{ type: 'lazy', bufferSize: 100 }"
+        :pagination="pagination"
+        :loading="dataLoading"
+        @page-change="rehandlePageChange"
+      >
+        <template #op="{ row }">
+          <t-link theme="primary" @click.prevent="DivideAccountsFQM(row)"
+            >查询分账结果</t-link
+          >
+        </template>
+        <template #status="{ row }">
+          <t-tag
+            :theme="
+              row.status === '待使用'
+                ? 'primary'
+                : row.status === '已完成'
+                ? 'success'
+                : row.status === '待付款'
+                ? 'danger'
+                : ''
+            "
+            variant="light-outline"
+            >{{ row.status }}
+            <template #icon>
+              <t-icon
+                :name="
+                  row.status === '待使用'
+                    ? 'help-circle-filled'
+                    : row.status === '已完成'
+                    ? 'check-circle-filled'
+                    : row.status === '待付款'
+                    ? 'error-circle-filled'
+                    : ''
+                "
+              />
+            </template>
+          </t-tag>
+        </template>
 
-    <!-- 列表内容 -->
-    <t-table
-      class="table-box"
-      :data="data"
-      :columns="COLUMNS"
-      row-key="id"
-      :hover="true"
-      max-height="calc(100% - 64px)"
-      :scroll="{ type: 'lazy', bufferSize: 100 }"
-      :pagination="pagination"
-      :loading="dataLoading"
-      :header-affixed-top="true"
-      @page-change="rehandlePageChange"
-    >
-      <template #op>
-        <t-link theme="primary" @click.prevent="">详情</t-link>
-      </template>
-    </t-table>
+        <template #isdeal="{ row }">
+          <t-tag
+            :theme="
+              row.isdeal == '-1'
+                ? 'danger'
+                : row.isdeal == '0'
+                ? 'default'
+                : row.isdeal == '1'
+                ? 'success'
+                : row.isdeal == '2'
+                ? 'primary'
+                : ''
+            "
+            variant="light-outline"
+          >
+            {{
+              row.isdeal == '-1'
+                ? '分账失败'
+                : row.isdeal == '0'
+                ? '不需要分账'
+                : row.isdeal == '1'
+                ? '分账成功'
+                : row.isdeal == '2'
+                ? '手动分账成功'
+                : ''
+            }}
+          </t-tag>
+        </template>
+      </t-table>
+    </t-loading>
   </t-card>
 </template>
 
@@ -104,15 +181,16 @@ export default {
 </script>
 
 <script setup lang="ts">
+import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next';
 // import { useRouter } from 'vue-router';
 import { SearchIcon } from 'tdesign-icons-vue-next';
 import { ref, onMounted } from 'vue';
 import { getStoreList } from '@/api/storeList';
-import { BaseList, ExportData } from '@/api/orderList';
+import { BaseList, ExportData, DivideAccountsFQ } from '@/api/orderList';
 import { COLUMNS } from './constants';
 
 // const router = useRouter();
-
+const loading = ref(false);
 // 分页配置
 const pageSizeOptions = [
   { label: '每页 10 条', value: 10 },
@@ -134,7 +212,7 @@ const data = ref([]);
 // 搜索参数
 const searchValue = ref('');
 // 根据店铺查询
-const storeId = ref(0);
+const storeId = ref(null);
 // 加载中
 const dataLoading = ref(false);
 
@@ -185,7 +263,7 @@ const fetchDataStoreList = async (searchStoreName: string) => {
  * @param value 选择的店铺ID
  */
 const fetchDataStoreChange = (value: any) => {
-  storeId.value = value || 0;
+  storeId.value = value;
   pagination.value.defaultCurrent = 1;
   fetchData();
 };
@@ -193,7 +271,7 @@ const fetchDataStoreChange = (value: any) => {
 /**
  * 切换商品订单或者活动订单筛选
  */
-const enrollId = ref(-1);
+const enrollId = ref(null);
 const fetchDataEnrollIdChange = (value: number) => {
   enrollId.value = value;
   pagination.value.defaultCurrent = 1;
@@ -203,9 +281,18 @@ const fetchDataEnrollIdChange = (value: number) => {
 /**
  * 切换订单状态
  */
-const status = ref(0);
+const status = ref(null);
 const fetchDataStatusChange = (value: number) => {
   status.value = value;
+  pagination.value.defaultCurrent = 1;
+  fetchData();
+};
+
+/**
+ * 切换分账状态
+ */
+const isDeal = ref(null);
+const fetchDataisDealChange = (value: number) => {
   pagination.value.defaultCurrent = 1;
   fetchData();
 };
@@ -217,6 +304,7 @@ const fetchData = async () => {
   dataLoading.value = true;
   try {
     const { userlist, count } = await BaseList({
+      isDeal: isDeal.value,
       status: status.value,
       enrollId: enrollId.value,
       searchValue: searchValue.value,
@@ -226,8 +314,6 @@ const fetchData = async () => {
       pageSize: pagination.value.defaultPageSize,
       storeId: storeId.value,
     });
-    // console.log('userlist', userlist);
-    // console.log('count', count);
 
     // 数据赋值
     data.value = userlist;
@@ -279,6 +365,34 @@ const rehandlePageChange = (
 
   // 重新获取数据
   fetchData();
+};
+
+/**
+ * 查询分账结果
+ */
+const DivideAccountsFQM = async (item: any) => {
+  if (!item.store_id || !item.out_order_no) {
+    MessagePlugin.error({
+      content: '这个订单不支持查询',
+    });
+    return;
+  }
+
+  loading.value = true;
+  const res = await DivideAccountsFQ({
+    storeId: item.store_id,
+    outOrderNo: item.out_order_no,
+  });
+
+  if (res.receivers) {
+    res.receivers = JSON.parse(res.receivers);
+  }
+  DialogPlugin.alert({
+    header: '查询分账详情',
+    body: JSON.stringify(res),
+  });
+
+  loading.value = false;
 };
 </script>
 

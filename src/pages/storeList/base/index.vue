@@ -39,8 +39,7 @@
           variant="dashed"
           block
           @click.stop="hStoreListExcel"
-          >导出excel<template #icon>
-            <CloudDownloadIcon /> </template
+          >导出excel<template #icon> <CloudDownloadIcon /> </template
         ></t-button>
       </t-col>
     </t-row>
@@ -187,7 +186,6 @@ const hStoreListExcel = async () => {
     const resData = await storeListExcel({
       storeName: '全部店铺数据',
     });
-
     window.location.href = resData.replace('http://', 'https://');
   } catch (e) {
     console.log(e);
