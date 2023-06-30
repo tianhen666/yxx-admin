@@ -10,8 +10,9 @@ const Api = {
   storeWxAccount: '/storeWxAccount/changeWxAccount',
   storeChangeStore: '/store/changeStore',
   wxGenerateUrlLink: '/wx/generateUrlLink',
-  storeDelete:'/store/deleteStore',
-  storeListExcel:'/store/storeListExcel'
+  storeDelete: '/store/deleteStore',
+  storeListExcel: '/store/storeListExcel',
+  setExtensionField: '/store/setExtensionField',
 };
 
 // 获取店铺列表
@@ -19,7 +20,9 @@ export function getStoreList(data: tModel.requestModel) {
   return request.post<tModel.ListResult>({
     url: Api.storeList,
     data,
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    },
   });
 }
 
@@ -28,7 +31,9 @@ export function getStoreInfo(data: tModel.requestModel2) {
   return request.post<tModel.ListModel2>({
     url: Api.storeInfo,
     data,
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    },
   });
 }
 
@@ -37,7 +42,9 @@ export function storeSetAsIsBrand(data: any) {
   return request.post({
     url: Api.storeSetAsIsBrand,
     data,
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    },
   });
 }
 
@@ -54,7 +61,9 @@ export function storeDeleteUser(data: any) {
   return request.post({
     url: Api.storeDeleteUser,
     data,
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    },
   });
 }
 
@@ -71,7 +80,9 @@ export function storeChangeStore(data: any) {
   return request.post({
     url: Api.storeChangeStore,
     data,
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    },
   });
 }
 
@@ -80,7 +91,9 @@ export function wxGenerateUrlLink(data: any) {
   return request.post({
     url: Api.wxGenerateUrlLink,
     data,
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    },
   });
 }
 
@@ -89,7 +102,9 @@ export function storeDelete(data: any) {
   return request.post({
     url: Api.storeDelete,
     data,
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    },
   });
 }
 
@@ -98,6 +113,19 @@ export function storeListExcel(data: any) {
   return request.post({
     url: Api.storeListExcel,
     data,
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    },
+  });
+}
+
+// 设置扩展字段
+export function setExtensionField(data: any) {
+  return request.post({
+    url: Api.setExtensionField,
+    data,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    },
   });
 }

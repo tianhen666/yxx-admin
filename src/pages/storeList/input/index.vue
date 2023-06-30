@@ -1,5 +1,6 @@
 <template>
   <div class="detail-base">
+    <!-- 门诊基本信息 -->
     <t-card title="门诊基本信息">
       <div class="info-block">
         <div class="info-item">
@@ -112,11 +113,37 @@
           <h1>预约功能</h1>
           <span>
             <t-switch
-              :value="dataObj.isbrand || 0"
+              :value="dataObj.aa || 0"
               size="large"
               :custom-value="[1, 0]"
               :label="['开', '关']"
               @change=""
+            ></t-switch>
+          </span>
+        </div>
+
+        <div class="info-item">
+          <h1>小程序底部技术支持:</h1>
+          <span>
+            <t-switch
+              :value="extensionField.technical || false"
+              size="large"
+              :custom-value="[true, false]"
+              :label="['开', '关']"
+              @change="_mSetExtensionField($event, 'technical')"
+            ></t-switch>
+          </span>
+        </div>
+
+        <div class="info-item">
+          <h1>关联店铺跳转:</h1>
+          <span>
+            <t-switch
+              :value="extensionField.chainGoTO || false"
+              size="large"
+              :custom-value="[true, false]"
+              :label="['开', '关']"
+              @change="_mSetExtensionField($event, 'chainGoTO')"
             ></t-switch>
           </span>
         </div>
@@ -125,6 +152,7 @@
 
     <div style="height: 26px"></div>
     <t-row :gutter="16">
+      <!-- 小程序配置 -->
       <t-col :sm="6" :xs="12">
         <t-card
           title="小程序和支付配置"
@@ -163,6 +191,8 @@
           </t-form>
         </t-card>
       </t-col>
+
+      <!-- 员工列表 -->
       <t-col :sm="6" :xs="12">
         <t-card
           title="员工列表"
@@ -261,6 +291,7 @@
 
     <div style="height: 26px"></div>
     <t-row :gutter="16">
+      <!-- 活动列表 -->
       <t-col :sm="6" :xs="12">
         <t-card title="活动列表" style="max-height: 510px; overflow-y: auto">
           <t-list :split="true" size="small">
@@ -287,6 +318,7 @@
         </t-card>
       </t-col>
 
+      <!-- 活动列表 -->
       <t-col :sm="6" :xs="12" style="max-height: 510px; overflow-y: auto">
         <t-card title="商品列表">
           <t-list :split="true" size="small">
@@ -327,7 +359,7 @@ export default {
 <script setup lang="ts">
 import { MessagePlugin, NotifyPlugin } from 'tdesign-vue-next';
 import { DeleteIcon, Edit1Icon, CheckCircleIcon } from 'tdesign-icons-vue-next';
-import { ref, onActivated } from 'vue';
+import { ref, onActivated, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import dayjs from 'dayjs';
 import {
@@ -338,6 +370,7 @@ import {
   storeWxAccount,
   storeChangeStore,
   wxGenerateUrlLink,
+  setExtensionField,
 } from '@/api/storeList';
 import { getUserList } from '@/api/userList';
 import { INITIAL_DATA, RULES } from './constants';
@@ -349,6 +382,43 @@ onActivated(() => {
   fetchData();
   generateUrlLink.value = {};
 });
+
+const extensionField = computed(() => {
+  try {
+    return JSON.parse(dataObj.value.extensionField);
+  } catch (e) {
+    return {};
+  }
+});
+/**
+ * 设置门店扩展字段
+ */
+const _mSetExtensionField = async (e, name) => {
+  console.log(name, e);
+  let storeJson: any = {};
+
+  // 设置加载Json信息
+  try {
+    storeJson = JSON.parse(dataObj.value.extensionField);
+  } catch (e) {
+    storeJson = {};
+  }
+  // 取反底部信息
+  storeJson[name] = e;
+  try {
+    await setExtensionField({
+      storeId: route.query.storeId as string,
+      extensionField: JSON.stringify(storeJson),
+    });
+
+    dataObj.value.extensionField = JSON.stringify(storeJson);
+  } catch (e) {
+    console.log(e);
+    MessagePlugin.error(e.message);
+  } finally {
+  }
+};
+
 /**
  * 获取店铺详情
  */
@@ -389,6 +459,7 @@ const setExpirationTime = async () => {
     NotifyPlugin.error({ title: '失败', content: '修改到期时间' });
   }
 };
+
 /**
  * 修改分账方式
  * @param value
