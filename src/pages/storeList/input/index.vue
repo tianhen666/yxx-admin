@@ -385,7 +385,7 @@ onActivated(() => {
 
 const extensionField = computed(() => {
   try {
-    return JSON.parse(dataObj.value.extensionField);
+    return JSON.parse(dataObj.value.extensionField) || {};
   } catch (e) {
     return {};
   }
@@ -399,11 +399,12 @@ const _mSetExtensionField = async (e, name) => {
 
   // 设置加载Json信息
   try {
-    storeJson = JSON.parse(dataObj.value.extensionField);
+    storeJson = JSON.parse(dataObj.value.extensionField) || {};
   } catch (e) {
     storeJson = {};
   }
-  // 取反底部信息
+
+  // 设置字段信息
   storeJson[name] = e;
   try {
     await setExtensionField({
