@@ -242,7 +242,10 @@
           <t-list :split="true" size="small">
             <template v-for="(item, index) in dataObj.userList" :key="index">
               <t-list-item v-if="item">
-                <t-list-item-meta :image="item.avatar" :title="item.nickname">
+                <t-list-item-meta
+                  :image="item.avatar"
+                  :title="`${item.nickname}: ${item.mobile}`"
+                >
                   <template #description>
                     <t-tag v-if="powerEdit != index" theme="primary">{{
                       powerName[item.userPower.power].label
