@@ -57,6 +57,7 @@
             { label: '无需分账', value: 0 },
             { label: '分账成功', value: 1 },
             { label: '手动分账成功', value: 2 },
+            { label: '后台点击分账成功', value: 3 },
           ]"
           :on-change="fetchDataisDealChange"
         >
@@ -108,10 +109,25 @@
         @page-change="rehandlePageChange"
       >
         <template #op="{ row }">
-          <t-link theme="primary" @click.prevent="DivideAccountsFQM(row)"
+          <t-link
+            theme="primary"
+            v-if="row.out_order_no"
+            @click.prevent="DivideAccountsFQM(row)"
             >查询分账结果</t-link
           >
+          <t-link
+            v-if="
+              !row.out_order_no &&
+              row.isdeal != 0 &&
+              row.pay_dt &&
+              row.status != 1
+            "
+            theme="danger"
+            @click.prevent="DivideAccountsOrdersM(row)"
+            >开始分账</t-link
+          >
         </template>
+
         <template #status="{ row }">
           <t-tag
             :theme="
@@ -152,6 +168,8 @@
                 ? 'success'
                 : row.isdeal == '2'
                 ? 'primary'
+                : row.isdeal == '3'
+                ? 'primary'
                 : ''
             "
             variant="light-outline"
@@ -165,6 +183,8 @@
                 ? '分账成功'
                 : row.isdeal == '2'
                 ? '手动分账成功'
+                : row.isdeal == '3'
+                ? '点击后台分账成功'
                 : ''
             }}
           </t-tag>
@@ -186,7 +206,12 @@ import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next';
 import { SearchIcon } from 'tdesign-icons-vue-next';
 import { ref, onMounted } from 'vue';
 import { getStoreList } from '@/api/storeList';
-import { BaseList, ExportData, DivideAccountsFQ } from '@/api/orderList';
+import {
+  BaseList,
+  ExportData,
+  DivideAccountsFQ,
+  DivideAccountsOrders,
+} from '@/api/orderList';
 import { COLUMNS } from './constants';
 
 // const router = useRouter();
@@ -382,6 +407,28 @@ const DivideAccountsFQM = async (item: any) => {
   const res = await DivideAccountsFQ({
     storeId: item.store_id,
     outOrderNo: item.out_order_no,
+  });
+
+  if (res.receivers) {
+    res.receivers = JSON.parse(res.receivers);
+  }
+  DialogPlugin.alert({
+    header: '查询分账详情',
+    body: JSON.stringify(res),
+  });
+
+  loading.value = false;
+};
+
+/**
+ * 开始分账
+ */
+
+const DivideAccountsOrdersM = async (item: any) => {
+  loading.value = true;
+  const res = await DivideAccountsOrders({
+    storeId: item.store_id,
+    traceNum: item.order_num,
   });
 
   if (res.receivers) {

@@ -12,6 +12,7 @@ const Api = {
   BaseList: '/storeProductOrder/productOrderList',
   ExportData: '/exportData/storeOrderEx',
   DivideAccountsFQ: '/DivideAccounts/profitsharing/queryorders',
+  DivideAccountsOrders: '/DivideAccounts/orders',
 };
 
 // 获取用户列表
@@ -47,4 +48,21 @@ export function DivideAccountsFQ(params: DivideAccountsFQRequestModel) {
     url: Api.DivideAccountsFQ,
     params,
   });
+}
+
+export interface DivideAccountsOrdersRequestModel {
+  storeId: string;
+  traceNum: string;
+}
+// 开始分账
+export function DivideAccountsOrders(params: DivideAccountsOrdersRequestModel) {
+  return request.post(
+    {
+      url: Api.DivideAccountsOrders,
+      params: params,
+    },
+    {
+      joinParamsToUrl: true,
+    },
+  );
 }
