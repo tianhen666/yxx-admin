@@ -4,45 +4,16 @@
       <t-card
         :title="item.title"
         :style="{ height: '168px' }"
-        :class="{ 'dashboard-item': true, 'dashboard-item--main-color': index == 0 }"
+        :class="{
+          'dashboard-item': true,
+          'dashboard-item--main-color': index == 0,
+        }"
       >
         <div class="dashboard-item-top">
-          <span :style="{ fontSize: `${resizeTime * 36}px` }">{{ item.number }}</span>
+          <span :style="{ fontSize: `${resizeTime * 36}px` }">{{
+            item.number
+          }}</span>
         </div>
-        <div class="dashboard-item-left">
-          <div
-            v-if="index === 0"
-            id="moneyContainer"
-            class="dashboard-chart-container"
-            :style="{ width: `${resizeTime * 120}px`, height: `${resizeTime * 66}px` }"
-          ></div>
-          <div
-            v-else-if="index === 1"
-            id="refundContainer"
-            class="dashboard-chart-container"
-            :style="{ width: `${resizeTime * 120}px`, height: `${resizeTime * 42}px` }"
-          ></div>
-          <span v-else-if="index === 2" :style="{ marginTop: `-24px` }">
-            <usergroup-icon />
-          </span>
-          <span v-else :style="{ marginTop: '-24px' }">
-            <file-icon />
-          </span>
-        </div>
-        <template #footer>
-          <div class="dashboard-item-bottom">
-            <div class="dashboard-item-block">
-              自从上周以来
-              <trend
-                class="dashboard-item-trend"
-                :type="item.upTrend ? 'up' : 'down'"
-                :is-reverse-color="index === 0"
-                :describe="item.upTrend || item.downTrend"
-              />
-            </div>
-            <t-icon name="chevron-right" />
-          </div>
-        </template>
       </t-card>
     </t-col>
   </t-row>
@@ -55,99 +26,28 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { onMounted, watch, ref, onUnmounted, nextTick } from 'vue';
+import { ref, PropType, watch } from 'vue';
 
-import * as echarts from 'echarts/core';
-import { LineChart, BarChart } from 'echarts/charts';
-import { CanvasRenderer } from 'echarts/renderers';
-import { UsergroupIcon, FileIcon } from 'tdesign-icons-vue-next';
-import { useSettingStore } from '@/store';
-import { changeChartsTheme } from '@/utils/color';
-
-// 导入样式
-import Trend from '@/components/trend/index.vue';
-import { constructInitDashboardDataset } from '../index';
+import { dashboardBaseModel } from '@/api/dashboard';
 
 import { PANE_LIST } from '../constants';
 
-echarts.use([LineChart, BarChart, CanvasRenderer]);
-
-const store = useSettingStore();
+// 控制样式大小
 const resizeTime = ref(1);
 
-// moneyCharts
-let moneyContainer: HTMLElement;
-let moneyChart: echarts.ECharts;
-const renderMoneyChart = () => {
-  if (!moneyContainer) {
-    moneyContainer = document.getElementById('moneyContainer');
-  }
-  moneyChart = echarts.init(moneyContainer);
-  moneyChart.setOption(constructInitDashboardDataset('line'));
-};
-
-// refundCharts
-let refundContainer: HTMLElement;
-let refundChart: echarts.ECharts;
-const renderRefundChart = () => {
-  if (!refundContainer) {
-    refundContainer = document.getElementById('refundContainer');
-  }
-  refundChart = echarts.init(refundContainer);
-  refundChart.setOption(constructInitDashboardDataset('bar'));
-};
-
-const renderCharts = () => {
-  renderMoneyChart();
-  renderRefundChart();
-};
-
-// chartSize update
-const updateContainer = () => {
-  if (document.documentElement.clientWidth >= 1400 && document.documentElement.clientWidth < 1920) {
-    resizeTime.value = Number((document.documentElement.clientWidth / 2080).toFixed(2));
-  } else if (document.documentElement.clientWidth < 1080) {
-    resizeTime.value = Number((document.documentElement.clientWidth / 1080).toFixed(2));
-  } else {
-    resizeTime.value = 1;
-  }
-  moneyChart.resize({
-    width: resizeTime.value * 120,
-    height: resizeTime.value * 66,
-  });
-  refundChart.resize({
-    width: resizeTime.value * 120,
-    height: resizeTime.value * 42,
-  });
-};
-
-onMounted(() => {
-  renderCharts();
-  nextTick(() => {
-    updateContainer();
-  });
-  window.addEventListener('resize', updateContainer, false);
-});
-
-onUnmounted(() => {
-  window.removeEventListener('resize', updateContainer);
-});
-
-watch(
-  () => store.brandTheme,
-  () => {
-    changeChartsTheme([refundChart]);
+const prop = defineProps({
+  info: {
+    type: Object as PropType<dashboardBaseModel>,
+    required: true,
   },
-);
+});
 
 watch(
-  () => store.mode,
-  () => {
-    [moneyChart, refundChart].forEach((item) => {
-      item.dispose();
+  () => prop.info,
+  (count, prevCount) => {
+    PANE_LIST.forEach((item) => {
+      item.number = count[item.type];
     });
-
-    renderCharts();
   },
 );
 </script>

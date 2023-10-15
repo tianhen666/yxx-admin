@@ -3,9 +3,7 @@ import { TdBaseTableProps } from 'tdesign-vue-next';
 interface DashboardPanel {
   title: string;
   number: string | number;
-  leftType: string;
-  upTrend?: string;
-  downTrend?: string;
+  type: string;
 }
 
 interface TendItem {
@@ -17,28 +15,24 @@ interface TendItem {
 
 export const PANE_LIST: Array<DashboardPanel> = [
   {
-    title: '总收入',
-    number: '¥ 28,425.00',
-    upTrend: '20.5%',
-    leftType: 'echarts-line',
+    title: '总收款(元)',
+    number: '0',
+    type: 'totalSales',
   },
   {
-    title: '总退款',
-    number: '¥ 768.00',
-    downTrend: '20.5%',
-    leftType: 'echarts-bar',
+    title: '店铺总数(个)',
+    number: '0',
+    type: 'totalStore',
   },
   {
-    title: '活跃用户（个）',
-    number: '1126',
-    upTrend: '20.5%',
-    leftType: 'icon-usergroup',
+    title: '总用户(个)',
+    number: '0',
+    type: 'totalUsers',
   },
   {
-    title: '产生订单（个）',
-    number: 527,
-    downTrend: '20.5%',
-    leftType: 'icon-file-paste',
+    title: '总订单(个)',
+    number: 0,
+    type: 'totalOrders',
   },
 ];
 
