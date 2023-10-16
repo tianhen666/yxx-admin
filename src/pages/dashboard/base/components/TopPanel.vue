@@ -11,7 +11,7 @@
       >
         <div class="dashboard-item-top">
           <span :style="{ fontSize: `${resizeTime * 36}px` }">{{
-            item.number
+            convertToTenThousand(item.number)
           }}</span>
         </div>
       </t-card>
@@ -50,6 +50,15 @@ watch(
     });
   },
 );
+
+const convertToTenThousand = (
+  totalNumber: number | string,
+): string | number => {
+  if (Number(totalNumber) > 10000) {
+    return (Number(totalNumber) / 10000).toFixed(2) + ' 万';
+  }
+  return totalNumber;
+};
 </script>
 
 <style lang="less" scoped>

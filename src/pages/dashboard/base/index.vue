@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="alice">
     <!-- 顶部 card  -->
     <top-panel :info="dataStatistics" class="row-container" />
     <!-- 中部图表  -->
@@ -9,6 +9,7 @@
     <!-- 出入库概览 -->
     <!-- <output-overview class="row-container" /> -->
   </div>
+  <t-loading attach="#alice" size="medium" :loading="loading"></t-loading>
 </template>
 
 <script lang="ts">
@@ -35,10 +36,13 @@ const dataStatistics = ref<dashboardBaseModel>({
   totalOrders: 0,
   totalSales: 0,
   totalUsers: 0,
+  totalStore: 0,
 });
+const loading = ref(true);
 const fetchData = async () => {
   const res = await dashboardBase();
   dataStatistics.value = res;
+  loading.value = false;
 };
 </script>
 
