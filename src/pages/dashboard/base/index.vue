@@ -1,15 +1,17 @@
 <template>
-  <div id="alice">
-    <!-- 顶部 card  -->
-    <top-panel :info="dataStatistics" class="row-container" />
-    <!-- 中部图表  -->
-    <!-- <middle-chart class="row-container" /> -->
-    <!-- 列表排名 -->
-    <!-- <rank-list class="row-container" /> -->
-    <!-- 出入库概览 -->
-    <!-- <output-overview class="row-container" /> -->
+  <div>
+    <div id="alice">
+      <!-- 顶部 card  -->
+      <top-panel :info="dataStatistics" class="row-container" />
+      <!-- 中部图表  -->
+      <!-- <middle-chart class="row-container" /> -->
+      <!-- 列表排名 -->
+      <!-- <rank-list class="row-container" /> -->
+      <!-- 出入库概览 -->
+      <!-- <output-overview class="row-container" /> -->
+    </div>
+    <t-loading attach="#alice" size="medium" :loading="loading"></t-loading>
   </div>
-  <t-loading attach="#alice" size="medium" :loading="loading"></t-loading>
 </template>
 
 <script lang="ts">

@@ -114,10 +114,6 @@ watch(tabIndex, (data, prevData) => {
           width: 200,
         },
       ];
-      rangeTime.value = [
-        dayjs().startOf('date').format('YYYY-MM-DD HH:mm:ss'),
-        dayjs().endOf('date').format('YYYY-MM-DD HH:mm:ss'),
-      ];
       break;
     case 1:
       COLUMNS.value = [
@@ -134,10 +130,6 @@ watch(tabIndex, (data, prevData) => {
           align: 'center',
           width: 200,
         },
-      ];
-      rangeTime.value = [
-        dayjs().subtract(30, 'day').format('YYYY-MM-DD HH:mm:ss'),
-        dayjs().endOf('date').format('YYYY-MM-DD HH:mm:ss'),
       ];
       break;
     case 2:
@@ -156,10 +148,6 @@ watch(tabIndex, (data, prevData) => {
           width: 200,
         },
       ];
-      rangeTime.value = [
-        dayjs().startOf('date').format('YYYY-MM-DD HH:mm:ss'),
-        dayjs().endOf('date').format('YYYY-MM-DD HH:mm:ss'),
-      ];
       break;
     case 3:
       COLUMNS.value = [
@@ -177,10 +165,6 @@ watch(tabIndex, (data, prevData) => {
           width: 200,
         },
       ];
-      rangeTime.value = [
-        dayjs().startOf('date').format('YYYY-MM-DD HH:mm:ss'),
-        dayjs().endOf('date').format('YYYY-MM-DD HH:mm:ss'),
-      ];
       break;
     default:
       COLUMNS.value = [
@@ -197,10 +181,6 @@ watch(tabIndex, (data, prevData) => {
           align: 'center',
           width: 200,
         },
-      ];
-      rangeTime.value = [
-        dayjs().startOf('date').format('YYYY-MM-DD HH:mm:ss'),
-        dayjs().endOf('date').format('YYYY-MM-DD HH:mm:ss'),
       ];
   }
   tableData.value = [];
@@ -255,9 +235,10 @@ const pageSizeOptions = [
   { label: '每页 1000 条', value: 1000 },
 ];
 const pagination = ref({
-  defaultPageSize: 10,
-  total: 0,
   defaultCurrent: 1,
+  defaultPageSize: 10,
+  current: 1,
+  total: 0,
   pageSizeOptions,
 });
 
@@ -278,7 +259,7 @@ const presets = ref({
 });
 
 const rangeTime = ref([
-  dayjs().startOf('date').format('YYYY-MM-DD HH:mm:ss'),
+  dayjs().subtract(6, 'day').format('YYYY-MM-DD HH:mm:ss'),
   dayjs().endOf('date').format('YYYY-MM-DD HH:mm:ss'),
 ]);
 const timeChange = () => {
@@ -289,6 +270,7 @@ const timeChange = () => {
 const rehandlePageChange = (curr) => {
   const { current, pageSize } = curr;
   pagination.value.defaultCurrent = current;
+  pagination.value.current = current;
   pagination.value.defaultPageSize = pageSize;
 
   getTableList();
@@ -298,6 +280,7 @@ const rehandlePageChange = (curr) => {
 const getTableList = async () => {
   let res: any = null;
   tableLoading.value = true;
+  console.log(pagination.value.defaultCurrent);
   const paramsM = {
     pageNum: pagination.value.defaultCurrent,
     pageSize: pagination.value.defaultPageSize,
@@ -325,6 +308,7 @@ const getTableList = async () => {
 
 const initGetTableList = () => {
   pagination.value.defaultCurrent = 1;
+  pagination.value.current = 1;
   getTableList();
 };
 
